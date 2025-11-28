@@ -42,7 +42,7 @@ const PostPage = () => {
           </Flex>
           <Flex gap={3} alignItems={'center'}>
             <Text fontSize={"sm"} color={secondaryTextColor}>1d</Text>
-            <BsThreeDots color={secondaryTextColor}/>
+            <Box as={BsThreeDots} color={secondaryTextColor} />
           </Flex>
         </Flex>
 
@@ -95,11 +95,11 @@ const PostPage = () => {
         comment="Looks really good!"
         createdAt="2d"
         likes={100}
-        username="XXXXXXX"
+        username="johndoe"
         userAvatar='https://picsum.photos/400/400?random=1'
       />
       <Comment 
-        comment="Intresting!"
+        comment="Interesting!"
         createdAt="1d"
         likes={20}
         username="Harry"

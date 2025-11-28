@@ -4,6 +4,7 @@ import {
     FormLabel,
     Input,
     InputGroup,
+    InputLeftElement,
     InputRightElement,
     Stack,
     Button,
@@ -105,16 +106,21 @@ export default function Login() {
                             >
                                 Username
                             </FormLabel>
-                            <Input 
-                                onChange={(e)=>{setInputs({...inputs,username:e.target.value})}} 
-                                value={inputs.username} 
-                                size="lg"
-                                borderColor={styles.inputBorder(mode)} 
-                                _focus={{ 
-                                    borderColor:"#3b82f6",
-                                    boxShadow: "0 0 0 1px #3b82f6"
-                                }} 
-                            />
+                            <InputGroup size="lg">
+                                <InputLeftElement h="full" pointerEvents="none">
+                                    <Text color={styles.grayText(mode)}>@</Text>
+                                </InputLeftElement>
+                                <Input 
+                                    onChange={(e)=>{setInputs({...inputs,username:e.target.value})}} 
+                                    value={inputs.username} 
+                                    paddingLeft="2.5rem"
+                                    borderColor={styles.inputBorder(mode)} 
+                                    _focus={{ 
+                                        borderColor:"#3b82f6",
+                                        boxShadow: "0 0 0 1px #3b82f6"
+                                    }} 
+                                />
+                            </InputGroup>
                         </FormControl>
 
                         <FormControl isRequired>
@@ -161,6 +167,7 @@ export default function Login() {
                                 }}
                                 color="white"
                                 onClick={handleLogin}
+                                loadingText="Logging in"
                                 isLoading={loading}
                                 fontWeight="600"
                             >

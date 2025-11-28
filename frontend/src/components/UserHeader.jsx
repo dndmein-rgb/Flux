@@ -27,13 +27,36 @@ const UserHeader = ({user}) => {
   const currentUser=useRecoilValue(userAtom)//logged in user
   const [following,setFollowing]=useState(user?.followers?.includes(currentUser?._id) || false)
   
+  // All hooks must be called before any conditional returns
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const textColor = useColorModeValue('gray.900', 'gray.100');
+  const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
+  const boxShadow = useColorModeValue(
+    '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    '0 4px 6px -1px rgba(0, 0, 0, 0.4)'
+  );
+  const badgeBg = useColorModeValue('gray.100', 'gray.700');
+  const avatarShadow = useColorModeValue(
+    '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+    '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
+  );
+  const linkColor = useColorModeValue('brand.600', 'brand.400');
+  const menuBg = useColorModeValue('white', 'gray.800');
+  const menuHover = useColorModeValue('gray.50', 'gray.700');
+  const tabActiveColor = useColorModeValue('brand.600', 'brand.500');
+  const tabActiveTextColor = useColorModeValue('brand.600', 'brand.400');
+  const tabHoverBorder = useColorModeValue('gray.400', 'gray.500');
+  
   if (!user) return null;
+  
   const copyUrl = () => {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl).then(() => {
       showToast("Success", "Profile link copied", "success");
     });
   };
+  
   const handleFollowUnfollow=async()=>{
     if(!currentUser){
       showToast("Error", "Please login to follow", "error")
@@ -68,11 +91,6 @@ const UserHeader = ({user}) => {
     }
   }
   
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const textColor = useColorModeValue('gray.900', 'gray.100');
-  const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
-  
   return (
     <VStack 
       gap={5} 
@@ -81,10 +99,7 @@ const UserHeader = ({user}) => {
       bg={bgColor}
       p={{ base: 4, md: 6 }}
       borderRadius="2xl"
-      boxShadow={useColorModeValue(
-        '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        '0 4px 6px -1px rgba(0, 0, 0, 0.4)'
-      )}
+      boxShadow={boxShadow}
     >
       <Flex justifyContent={"space-between"} w={"full"} align="start">
         <Box flex={1}>
@@ -95,7 +110,7 @@ const UserHeader = ({user}) => {
             <Text fontSize={"sm"} color={secondaryTextColor}>{user.username}</Text>
             <Text
               fontSize={"xs"}
-              bg={useColorModeValue('gray.100', 'gray.700')}
+              bg={badgeBg}
               color={secondaryTextColor}
               px={2}
               py={1}
@@ -114,10 +129,7 @@ const UserHeader = ({user}) => {
               size={{base:"lg",md:"xl"}}
               border="4px solid"
               borderColor={borderColor}
-              boxShadow={useColorModeValue(
-                '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
-              )}
+              boxShadow={avatarShadow}
             />
           )}
           {!user.profilePic && (
@@ -127,10 +139,7 @@ const UserHeader = ({user}) => {
               size={{base:"lg",md:"xl"}}
               border="4px solid"
               borderColor={borderColor}
-              boxShadow={useColorModeValue(
-                '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
-              )}
+              boxShadow={avatarShadow}
             />
           )}
         </Box>
@@ -138,21 +147,22 @@ const UserHeader = ({user}) => {
       
       <Text color={secondaryTextColor} fontSize="md">{user.bio}</Text>
 
-      {currentUser._id===user._id &&(
-        <Link as={RouterLink} to="/update" w="full">
-          <Button size={"md"} w="full" variant="outline">Update Profile</Button>
-        </Link>
-      )}
-      {currentUser._id!==user._id &&(
-        <Button 
-          onClick={handleFollowUnfollow} 
-          isLoading={updating} 
-          size={"md"}
-          w="full"
-        >
-          {following ? "Unfollow":"Follow"}
-        </Button>
-      )}
+      <Flex w="full" justifyContent="center">
+        {currentUser._id===user._id &&(
+          <Link as={RouterLink} to="/update">
+            <Button size={"md"} variant="outline">Update Profile</Button>
+          </Link>
+        )}
+        {currentUser._id!==user._id &&(
+          <Button 
+            onClick={handleFollowUnfollow} 
+            isLoading={updating} 
+            size={"md"}
+          >
+            {following ? "Unfollow":"Follow"}
+          </Button>
+        )}
+      </Flex>
       
       <Flex w={"full"} justifyContent={"space-between"} align="center">
         <Flex gap={2} alignItems={"center"} flexWrap="wrap">
@@ -161,7 +171,7 @@ const UserHeader = ({user}) => {
           </Text>
           <Box w={1} h={1} bg={secondaryTextColor} borderRadius={"full"}></Box>
           <Link 
-            color={useColorModeValue('brand.600', 'brand.400')} 
+            color={linkColor} 
             fontSize="sm"
             _hover={{ textDecoration: 'underline' }}
           >
@@ -179,12 +189,12 @@ const UserHeader = ({user}) => {
               </MenuButton>
               <Portal />
               <MenuList 
-                bg={useColorModeValue('white', 'gray.800')}
+                bg={menuBg}
                 borderColor={borderColor}
               >
                 <MenuItem 
-                  bg={useColorModeValue('white', 'gray.800')}
-                  _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}
+                  bg={menuBg}
+                  _hover={{ bg: menuHover }}
                   onClick={copyUrl}
                 >
                   Copy Link
@@ -199,13 +209,13 @@ const UserHeader = ({user}) => {
         <Flex 
           flex={1} 
           borderBottom={"2px solid"} 
-          borderColor={useColorModeValue('brand.600', 'brand.500')}
+          borderColor={tabActiveColor}
           justifyContent={"center"} 
           pb={3} 
           cursor={"pointer"}
           transition="all 0.2s"
         >
-          <Text fontWeight={"bold"} color={useColorModeValue('brand.600', 'brand.400')}>Threads</Text>
+          <Text fontWeight={"bold"} color={tabActiveTextColor}>Threads</Text>
         </Flex>
         <Flex 
           flex={1} 
@@ -217,7 +227,7 @@ const UserHeader = ({user}) => {
           cursor={"pointer"}
           transition="all 0.2s"
           _hover={{ 
-            borderColor: useColorModeValue('gray.400', 'gray.500'),
+            borderColor: tabHoverBorder,
             color: textColor
           }}
         >

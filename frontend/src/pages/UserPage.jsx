@@ -10,9 +10,11 @@ const UserPage = () => {
   const {username}=useParams();
   const showToast=useShowToast();
   const [loading,setLoading]=useState(true);
+  const notFoundColor = useColorModeValue('#0f172a', '#f1f5f9');
 
   useEffect(()=>{
     const getUser=async()=>{
+      setLoading(true);
       try {
       const res=await fetch(`/api/users/profile/${username}`);
       const data=await res.json();
@@ -30,17 +32,19 @@ const UserPage = () => {
   }
     getUser();
   },[username,showToast])
+  
   if(!user && loading) return (
     <Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
       <Spinner size={'xl'}/>
     </Flex>
   )
+  
   if(!user && !loading) return (
     <Flex justify="center" align="center" h="50vh">
       <h1 style={{ 
         fontSize: '2rem', 
         fontWeight: 'bold',
-        color: useColorModeValue('#0f172a', '#f1f5f9')
+        color: notFoundColor
       }}>
         User not found
       </h1>
