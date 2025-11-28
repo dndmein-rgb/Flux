@@ -1,6 +1,5 @@
 import { Avatar, Box, Flex, Image, Text, useColorModeValue } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { BsThreeDots } from "react-icons/bs";
 import { Link, useNavigate } from "react-router";
 import Actions from "./Actions";
 import useShowToast from "@/hooks/useShowToast";
