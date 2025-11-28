@@ -68,60 +68,116 @@ export default function Login() {
     }
 
     return (
-        <Stack spacing={6} mx="auto" maxW="md" w="full">
+        <Stack spacing={8} mx="auto" maxW="md" w="full" className="animate-scale-in" px={4}>
             
-            <Stack align="center">
-                <Heading fontSize="4xl" color={styles.heading(mode)}>Login</Heading>
+            <Stack align="center" spacing={2}>
+                <Heading 
+                    fontSize={{ base: "3xl", md: "4xl" }} 
+                    color={styles.heading(mode)}
+                    fontFamily="heading"
+                    fontWeight="800"
+                >
+                    Welcome Back
+                </Heading>
+                <Text color={styles.grayText(mode)} fontSize="md">
+                    Login to continue to Threads
+                </Text>
             </Stack>
 
                 <Box
-                    rounded="lg"
+                    rounded="2xl"
                     bg={styles.cardBg(mode)}
-                    p={8}
+                    p={{ base: 6, md: 8 }}
                     border="1px solid"
                     borderColor={styles.border(mode)}
-                    boxShadow="0px 8px 25px rgba(30,64,175,0.15)"
+                    boxShadow={mode 
+                        ? "0 20px 25px -5px rgba(0, 0, 0, 0.6)" 
+                        : "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
+                    }
                 >
-                    <Stack spacing={5}>
+                    <Stack spacing={6}>
 
                         <FormControl isRequired>
-                            <FormLabel color={styles.heading(mode)}> Username</FormLabel>
-                            <Input onChange={(e)=>{setInputs({...inputs,username:e.target.value})}} value={inputs.username} borderColor={styles.inputBorder(mode)} _focus={{ borderColor:"#3b82f6" }} />
+                            <FormLabel 
+                                color={styles.heading(mode)}
+                                fontWeight="600"
+                                fontSize="sm"
+                            >
+                                Username
+                            </FormLabel>
+                            <Input 
+                                onChange={(e)=>{setInputs({...inputs,username:e.target.value})}} 
+                                value={inputs.username} 
+                                size="lg"
+                                borderColor={styles.inputBorder(mode)} 
+                                _focus={{ 
+                                    borderColor:"#3b82f6",
+                                    boxShadow: "0 0 0 1px #3b82f6"
+                                }} 
+                            />
                         </FormControl>
 
                         <FormControl isRequired>
-                            <FormLabel color={styles.heading(mode)}>Password</FormLabel>
-                            <InputGroup>
+                            <FormLabel 
+                                color={styles.heading(mode)}
+                                fontWeight="600"
+                                fontSize="sm"
+                            >
+                                Password
+                            </FormLabel>
+                            <InputGroup size="lg">
                                 <Input
-                                onChange={(e)=>{setInputs({...inputs, password:e.target.value})}} value={inputs.password}
+                                    onChange={(e)=>{setInputs({...inputs, password:e.target.value})}} 
+                                    value={inputs.password}
                                     type={showPassword ? "text" : "password"}
                                     borderColor={styles.inputBorder(mode)}
-                                    _focus={{ borderColor:"#3b82f6" }}
+                                    _focus={{ 
+                                        borderColor:"#3b82f6",
+                                        boxShadow: "0 0 0 1px #3b82f6"
+                                    }}
                                 />
                                 <InputRightElement h="full">
-                                    <Button variant="ghost" onClick={() => setShowPassword(!showPassword)}>
+                                    <Button 
+                                        variant="ghost" 
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        size="sm"
+                                    >
                                         {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
                         </FormControl>
 
-                        <Stack spacing={10} pt={2}>
+                        <Stack spacing={6} pt={4}>
                             <Button
                                 size="lg"
                                 bg={styles.buttonBg(mode)}
-                                _hover={{ bg:styles.buttonHover(mode) }}
+                                _hover={{ 
+                                    bg:styles.buttonHover(mode),
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: mode 
+                                        ? '0 10px 15px -3px rgba(59, 130, 246, 0.3)'
+                                        : '0 10px 15px -3px rgba(37, 99, 235, 0.3)'
+                                }}
                                 color="white"
                                 onClick={handleLogin}
                                 isLoading={loading}
+                                fontWeight="600"
                             >
                                 Login
                             </Button>
                         </Stack>
 
-                        <Text align="center" color={styles.grayText(mode)}>
+                        <Text align="center" color={styles.grayText(mode)} fontSize="sm">
                             Don't have an account?{" "}
-                            <Link color={styles.linkBlue} onClick={()=>setAuthScreen("signup")}>Sign up</Link>
+                            <Link 
+                                color={styles.linkBlue} 
+                                onClick={()=>setAuthScreen("signup")}
+                                fontWeight="600"
+                                _hover={{ textDecoration: 'underline' }}
+                            >
+                                Sign up
+                            </Link>
                         </Text>
 
                     </Stack>

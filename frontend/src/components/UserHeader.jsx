@@ -9,6 +9,7 @@ import {
   Portal,
   Text,
   VStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { BsInstagram } from "react-icons/bs";
@@ -67,59 +68,125 @@ const UserHeader = ({user}) => {
     }
   }
   
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const textColor = useColorModeValue('gray.900', 'gray.100');
+  const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
+  
   return (
-    <VStack gap={4} alignItems={"start"}>
-      <Flex justifyContent={"space-between"} w={"full"}>
-        <Box>
-          <Text fontWeight={"bold"} fontSize={"3xl"}>{user.username}</Text>
-          <Flex gap={2} alignItems={"center"}>
-            <Text fontSize={"sm"}>{user.username}</Text>
+    <VStack 
+      gap={5} 
+      alignItems={"start"} 
+      className="animate-fade-in"
+      bg={bgColor}
+      p={{ base: 4, md: 6 }}
+      borderRadius="2xl"
+      boxShadow={useColorModeValue(
+        '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        '0 4px 6px -1px rgba(0, 0, 0, 0.4)'
+      )}
+    >
+      <Flex justifyContent={"space-between"} w={"full"} align="start">
+        <Box flex={1}>
+          <Text fontWeight={"bold"} fontSize={{ base: "2xl", md: "3xl" }} color={textColor} fontFamily="heading">
+            {user.username}
+          </Text>
+          <Flex gap={2} alignItems={"center"} mt={2}>
+            <Text fontSize={"sm"} color={secondaryTextColor}>{user.username}</Text>
             <Text
               fontSize={"xs"}
-              bg={"gray.dark"}
-              color={"gray.light"}
-              p={1}
+              bg={useColorModeValue('gray.100', 'gray.700')}
+              color={secondaryTextColor}
+              px={2}
+              py={1}
               borderRadius={"full"}
+              fontWeight="500"
             >
               threads.net
             </Text>
           </Flex>
         </Box>
         <Box>
-          {user.profilePic && <Avatar name={user.name} src={user.profilePic} size={{base:"md",md:"xl"}} />}
-          {!user.profilePic && <Avatar name={user.name} src="https://bit.ly/broken-link" size={{base:"md",md:"xl"}} />}
+          {user.profilePic && (
+            <Avatar 
+              name={user.name} 
+              src={user.profilePic} 
+              size={{base:"lg",md:"xl"}}
+              border="4px solid"
+              borderColor={borderColor}
+              boxShadow={useColorModeValue(
+                '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
+              )}
+            />
+          )}
+          {!user.profilePic && (
+            <Avatar 
+              name={user.name} 
+              src="https://bit.ly/broken-link" 
+              size={{base:"lg",md:"xl"}}
+              border="4px solid"
+              borderColor={borderColor}
+              boxShadow={useColorModeValue(
+                '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
+              )}
+            />
+          )}
         </Box>
       </Flex>
-      <Text>{user.bio}</Text>
+      
+      <Text color={secondaryTextColor} fontSize="md">{user.bio}</Text>
 
       {currentUser._id===user._id &&(
-        <Link as={RouterLink} to="/update" >
-        <Button size={"sm"}>Update Profile</Button>
+        <Link as={RouterLink} to="/update" w="full">
+          <Button size={"md"} w="full" variant="outline">Update Profile</Button>
         </Link>
       )}
-       {currentUser._id!==user._id &&(
-        
-        <Button onClick={handleFollowUnfollow} isLoading={updating} size={"sm"}>{following ? "Unfollow":"Follow"}</Button>
-        
+      {currentUser._id!==user._id &&(
+        <Button 
+          onClick={handleFollowUnfollow} 
+          isLoading={updating} 
+          size={"md"}
+          w="full"
+        >
+          {following ? "Unfollow":"Follow"}
+        </Button>
       )}
-      <Flex w={"full"} justifyContent={"space-between"}>
-        <Flex gap={2} alignItems={"center"}>
-          <Text color={"gray.light"}>{user.followers.length} followers</Text>
-          <Box w={1} h={1} bg={"gray.light"} borderRadius={"full"}></Box>
-          <Link color={"gray.light"}>instagram.com</Link>
+      
+      <Flex w={"full"} justifyContent={"space-between"} align="center">
+        <Flex gap={2} alignItems={"center"} flexWrap="wrap">
+          <Text color={secondaryTextColor} fontWeight="600" fontSize="sm">
+            {user.followers.length} followers
+          </Text>
+          <Box w={1} h={1} bg={secondaryTextColor} borderRadius={"full"}></Box>
+          <Link 
+            color={useColorModeValue('brand.600', 'brand.400')} 
+            fontSize="sm"
+            _hover={{ textDecoration: 'underline' }}
+          >
+            instagram.com
+          </Link>
         </Flex>
-        <Flex>
+        <Flex gap={1}>
           <Box className="icon-container">
-            <BsInstagram size={24} cursor={"pointer"} />
+            <BsInstagram size={20} cursor={"pointer"} />
           </Box>
           <Box className="icon-container">
             <Menu>
               <MenuButton>
-                <CgMoreO size={24} cursor={"pointer"} />
+                <CgMoreO size={20} cursor={"pointer"} />
               </MenuButton>
               <Portal />
-              <MenuList bg={"gray.dark"}>
-                <MenuItem bg={"gray.dark"} onClick={copyUrl}>
+              <MenuList 
+                bg={useColorModeValue('white', 'gray.800')}
+                borderColor={borderColor}
+              >
+                <MenuItem 
+                  bg={useColorModeValue('white', 'gray.800')}
+                  _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}
+                  onClick={copyUrl}
+                >
                   Copy Link
                 </MenuItem>
               </MenuList>
@@ -127,12 +194,34 @@ const UserHeader = ({user}) => {
           </Box>
         </Flex>
       </Flex>
-      <Flex w={"full"}>
-        <Flex flex={1} borderBottom={"1.5px solid white"} justifyContent={"center"} pb={3} cursor={"pointer"}>
-        <Text fontWeight={"bold"}>Threads</Text>
+      
+      <Flex w={"full"} gap={0}>
+        <Flex 
+          flex={1} 
+          borderBottom={"2px solid"} 
+          borderColor={useColorModeValue('brand.600', 'brand.500')}
+          justifyContent={"center"} 
+          pb={3} 
+          cursor={"pointer"}
+          transition="all 0.2s"
+        >
+          <Text fontWeight={"bold"} color={useColorModeValue('brand.600', 'brand.400')}>Threads</Text>
         </Flex>
-         <Flex flex={1} borderBottom={"1px solid gray"} color={"gray.light"} justifyContent={"center"} pb={3} cursor={"pointer"}>
-        <Text fontWeight={"bold"}>Replies</Text>
+        <Flex 
+          flex={1} 
+          borderBottom={"2px solid"} 
+          borderColor={borderColor}
+          color={secondaryTextColor} 
+          justifyContent={"center"} 
+          pb={3} 
+          cursor={"pointer"}
+          transition="all 0.2s"
+          _hover={{ 
+            borderColor: useColorModeValue('gray.400', 'gray.500'),
+            color: textColor
+          }}
+        >
+          <Text fontWeight={"bold"}>Replies</Text>
         </Flex>
       </Flex>
     </VStack>

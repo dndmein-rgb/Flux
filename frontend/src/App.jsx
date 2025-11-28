@@ -15,7 +15,11 @@ import CreatePost from './components/CreatePost'
 const App = () => {
   const user=useRecoilValue(userAtom)
   return (
-    <Container maxW="620px">
+    <Container 
+      maxW="680px" 
+      px={{ base: 4, md: 6 }}
+      py={{ base: 4, md: 6 }}
+    >
       <Header />
       <Routes>
         <Route path="/" element ={user ?<HomePage/>:<Navigate to={'/auth'}/> }/>

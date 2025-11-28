@@ -11,6 +11,7 @@ import {
   Button,
   Avatar,
   Center,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
@@ -55,37 +56,57 @@ export default function UpdateProfilePage() {
     }
   };
   return (
-    <Flex align="center" justify="center" minH="100vh" w="full" px={4}>
+    <Flex align="center" justify="center" minH="100vh" w="full" px={4} className="animate-fade-in">
     <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '700px' }}>
     <Stack
-      spacing={5}
+      spacing={6}
       w="full"
-      bg="gray.800"
-      rounded="xl"
-      p={6}
-      boxShadow="dark-lg"
+      bg={useColorModeValue('white', 'gray.800')}
+      rounded="2xl"
+      p={{ base: 6, md: 8 }}
+      boxShadow={useColorModeValue(
+        '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        '0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5)'
+      )}
+      border="1px solid"
+      borderColor={useColorModeValue('gray.200', 'gray.700')}
     >
-      <Heading fontSize={{ base: "2xl", md: "3xl" }} color="gray.100">
-        User Profile Edit
+      <Heading 
+        fontSize={{ base: "2xl", md: "3xl" }} 
+        color={useColorModeValue('gray.900', 'gray.100')}
+        fontFamily="heading"
+        fontWeight="700"
+      >
+        Edit Profile
       </Heading>
 
       <FormControl>
-        <Stack direction={["column", "row"]} spacing={6}>
+        <Stack direction={["column", "row"]} spacing={6} align="center">
           <Center>
             <Avatar
               size="xl"
-              boxShadow="lg"
+              boxShadow={useColorModeValue(
+                '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
+              )}
               src={imgUrl || user.profilePic}
+              border="4px solid"
+              borderColor={useColorModeValue('gray.100', 'gray.700')}
             />
           </Center>
           <Center w="full">
             <Button
-            onClick={()=>fileRef.current.click()}
-            
+              onClick={()=>fileRef.current.click()}
               w="full"
-              bg="blue.600"
-              color="white"
-              _hover={{ bg: "blue.700" }}
+              size="lg"
+              variant="outline"
+              borderColor={useColorModeValue('brand.600', 'brand.500')}
+              color={useColorModeValue('brand.600', 'brand.400')}
+              _hover={{ 
+                bg: useColorModeValue('brand.50', 'gray.700'),
+                transform: 'translateY(-2px)',
+                boxShadow: 'lg'
+              }}
             >
               Change Avatar
             </Button>
@@ -94,100 +115,121 @@ export default function UpdateProfilePage() {
         </Stack>
       </FormControl>
 
-      <FormControl >
-        <FormLabel color="gray.300">Full Name</FormLabel>
+      <FormControl>
+        <FormLabel 
+          color={useColorModeValue('gray.700', 'gray.300')}
+          fontWeight="600"
+          fontSize="sm"
+        >
+          Full Name
+        </FormLabel>
         <Input
-        value={inputs.name}
+          value={inputs.name}
           onChange={(e) => {
             setInputs({ ...inputs, name: e.target.value });
           }}
-          bg="gray.700"
-          borderColor="gray.600"
-          color="gray.100"
-          _placeholder={{ color: "gray.500" }}
+          size="lg"
           placeholder="John Doe"
+          _placeholder={{ color: useColorModeValue('gray.400', 'gray.500') }}
         />
       </FormControl>
 
-      <FormControl >
-        <FormLabel color="gray.300">Username</FormLabel>
+      <FormControl>
+        <FormLabel 
+          color={useColorModeValue('gray.700', 'gray.300')}
+          fontWeight="600"
+          fontSize="sm"
+        >
+          Username
+        </FormLabel>
         <Input
           value={inputs.username}
           onChange={(e) => {
             setInputs({ ...inputs, username: e.target.value });
           }}
-          bg="gray.700"
-          borderColor="gray.600"
-          color="gray.100"
-          _placeholder={{ color: "gray.500" }}
+          size="lg"
           placeholder="johndoe"
+          _placeholder={{ color: useColorModeValue('gray.400', 'gray.500') }}
         />
       </FormControl>
 
-      <FormControl >
-        <FormLabel color="gray.300">Email</FormLabel>
+      <FormControl>
+        <FormLabel 
+          color={useColorModeValue('gray.700', 'gray.300')}
+          fontWeight="600"
+          fontSize="sm"
+        >
+          Email
+        </FormLabel>
         <Input
-        value={inputs.email}
+          value={inputs.email}
           onChange={(e) => {
             setInputs({ ...inputs, email: e.target.value });
           }}
-          bg="gray.700"
-          borderColor="gray.600"
-          color="gray.100"
-          _placeholder={{ color: "gray.500" }}
+          size="lg"
+          type="email"
           placeholder="example@mail.com"
+          _placeholder={{ color: useColorModeValue('gray.400', 'gray.500') }}
         />
       </FormControl>
 
-      <FormControl >
-        <FormLabel color="gray.300">Bio</FormLabel>
+      <FormControl>
+        <FormLabel 
+          color={useColorModeValue('gray.700', 'gray.300')}
+          fontWeight="600"
+          fontSize="sm"
+        >
+          Bio
+        </FormLabel>
         <Input
-        value={inputs.bio}
+          value={inputs.bio}
           onChange={(e) => {
             setInputs({ ...inputs, bio: e.target.value });
           }}
-          bg="gray.700"
-          borderColor="gray.600"
-          color="gray.100"
-          _placeholder={{ color: "gray.500" }}
+          size="lg"
           placeholder="Tell something about yourself"
+          _placeholder={{ color: useColorModeValue('gray.400', 'gray.500') }}
         />
       </FormControl>
 
-      <FormControl > 
-        <FormLabel color="gray.300">Password</FormLabel>
+      <FormControl> 
+        <FormLabel 
+          color={useColorModeValue('gray.700', 'gray.300')}
+          fontWeight="600"
+          fontSize="sm"
+        >
+          Password
+        </FormLabel>
         <Input
-        value={inputs.password}
+          value={inputs.password}
           onChange={(e) => {
             setInputs({ ...inputs, password: e.target.value });
           }}
-          bg="gray.700"
-          borderColor="gray.600"
-          color="gray.100"
-          _placeholder={{ color: "gray.500" }}
+          size="lg"
           placeholder="New password"
           type="password"
+          _placeholder={{ color: useColorModeValue('gray.400', 'gray.500') }}
         />
       </FormControl>
 
-      <Stack direction={["column", "row"]} spacing={5}>
+      <Stack direction={["column", "row"]} spacing={4} pt={4}>
         <Button
           w="full"
-          bg="gray.600"
-          color="white"
-          _hover={{ bg: "gray.500" }}
+          size="lg"
+          variant="outline"
+          _hover={{ 
+            bg: useColorModeValue('gray.50', 'gray.700'),
+          }}
         >
           Cancel
         </Button>
 
         <Button
-        isLoading={updating}
-        onClick={handleSubmit}
-        type="submit  "
+          isLoading={updating}
+          onClick={handleSubmit}
+          type="submit"
           w="full"
-          bg="blue.600"
-          color="white"
-          _hover={{ bg: "blue.700" }}
+          size="lg"
         >
           Save Changes
         </Button>

@@ -22,23 +22,63 @@ const Header = () => {
     const logoSrc = mounted && colorMode === 'dark' ? '/light-logo.svg' : '/dark-logo.svg'
 
     return (
-        <Flex justifyContent={"space-between"} mt={6} mb={12}>
+        <Flex 
+            justifyContent={user ? "space-between" : "center"} 
+            alignItems={"center"}
+            mt={6} 
+            mb={12}
+            px={{ base: 4, md: 0 }}
+            className="animate-fade-in"
+        >
             {user && 
-            <Link as={RouterLink} to="/">
-            <AiFillHome size={24} cursor={"pointer"} />
+            <Link 
+                as={RouterLink} 
+                to="/"
+                _hover={{ transform: 'scale(1.1)' }}
+                transition="all 0.2s"
+            >
+                <Flex 
+                    className="icon-container"
+                    bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'}
+                    _hover={{ 
+                        bg: colorMode === 'dark' ? 'gray.700' : 'gray.200',
+                    }}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <AiFillHome size={20} />
+                </Flex>
             </Link>}
             <Image 
                 cursor={'pointer'} 
                 w={6} 
+                h={6}
                 objectFit="contain" 
                 src={logoSrc} 
                 alt="logo" 
                 onClick={toggleColorMode}
                 fallbackSrc="/dark-logo.svg"
+                transition="all 0.3s"
+                _hover={{ transform: 'rotate(180deg)' }}
             />
             {user && 
-            <Link as={RouterLink} to={`/${user.username}`}>
-            <RxAvatar size={24} cursor={"pointer"} />
+            <Link 
+                as={RouterLink} 
+                to={`/${user.username}`}
+                _hover={{ transform: 'scale(1.1)' }}
+                transition="all 0.2s"
+            >
+                <Flex 
+                    className="icon-container"
+                    bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'}
+                    _hover={{ 
+                        bg: colorMode === 'dark' ? 'gray.700' : 'gray.200',
+                    }}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <RxAvatar size={20} />
+                </Flex>
             </Link>}
         </Flex>
     )

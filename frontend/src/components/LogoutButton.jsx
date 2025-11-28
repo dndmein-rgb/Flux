@@ -1,6 +1,6 @@
 import { userAtom } from '@/atoms/userAtom'
 import useShowToast from '@/hooks/useShowToast';
-import { Button } from '@chakra-ui/react';
+import { Button, useColorModeValue } from '@chakra-ui/react';
 import React from 'react'
 import { FiLogOut } from 'react-icons/fi';
 import { useSetRecoilState } from 'recoil'
@@ -29,8 +29,21 @@ const LogoutButton = () => {
         }
     }
   return (
-    <Button position="fixed" top={"30px"} right={"30px"} size={'md'} onClick={handleLogout}>
-        <FiLogOut size={20}/>
+    <Button 
+      position="fixed" 
+      top={"30px"} 
+      right={"30px"} 
+      size={'md'}
+      variant="ghost"
+      onClick={handleLogout}
+      _hover={{
+        bg: useColorModeValue('red.50', 'red.900'),
+        color: 'red.500',
+        transform: 'translateY(-2px)',
+      }}
+      transition="all 0.2s"
+    >
+      <FiLogOut size={20}/>
     </Button>
   )
 }

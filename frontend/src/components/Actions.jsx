@@ -12,6 +12,7 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	Text,
+	useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -83,27 +84,37 @@ const Actions = ({ liked, setLiked }) => {
 			</Flex>
 
 			<Modal isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader></ModalHeader>
+				<ModalOverlay backdropFilter="blur(4px)" />
+				<ModalContent 
+					borderRadius="2xl"
+					mx={4}
+				>
+					<ModalHeader fontSize="xl" fontWeight="700">Add Reply</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody pb={6}>
 						<FormControl>
 							<Input
-								placeholder="Reply goes here.."
+								placeholder="Write your reply..."
 								value={reply}
 								onChange={(e) => setReply(e.target.value)}
+								size="lg"
+								borderRadius="lg"
 							/>
 						</FormControl>
 					</ModalBody>
 
-					<ModalFooter>
+					<ModalFooter gap={3}>
 						<Button
-							colorScheme="blue"
-							size={"sm"}
-							mr={3}
+							variant="ghost"
+							onClick={onClose}
+						>
+							Cancel
+						</Button>
+						<Button
+							size={"md"}
 							isLoading={isReplying}
 							onClick={() => {}}
+							isDisabled={!reply.trim()}
 						>
 							Reply
 						</Button>

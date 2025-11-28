@@ -60,36 +60,97 @@ const CreatePost = () => {
         bottom={10}
         right={10}
         leftIcon={<AddIcon />}
-        bg={useColorModeValue("gray.300", "gray.dark")}
+        size="lg"
+        boxShadow={useColorModeValue(
+          '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
+          '0 10px 15px -3px rgba(59, 130, 246, 0.4)'
+        )}
         onClick={onOpen}
+        _hover={{
+          transform: 'translateY(-2px)',
+          boxShadow: useColorModeValue(
+            '0 20px 25px -5px rgba(0, 0, 0, 0.2)',
+            '0 20px 25px -5px rgba(59, 130, 246, 0.5)'
+          ),
+        }}
       >
         Post
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create Post</ModalHeader>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay backdropFilter="blur(4px)" />
+        <ModalContent 
+          borderRadius="2xl"
+          mx={4}
+        >
+          <ModalHeader 
+            fontSize="2xl" 
+            fontWeight="700"
+            fontFamily="heading"
+          >
+            Create Post
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <Textarea placeholder="Post content goes here" onChange={handleTextChange} value={postText}/>
-              <Text fontSize={'xs'} fontWeight={'bold'} textAlign={'right'} m={1} color={"gray.800"}>
-                {postText.length}/500
-              </Text>
+              <Textarea 
+                placeholder="What's on your mind?" 
+                onChange={handleTextChange} 
+                value={postText}
+                size="lg"
+                minH="120px"
+                resize="none"
+                borderRadius="lg"
+              />
+              <Flex justify="space-between" align="center" mt={2}>
+                <Button
+                  variant="ghost"
+                  leftIcon={<BsFillImageFill />}
+                  onClick={()=>imageRef.current.click()}
+                  size="sm"
+                  colorScheme="brand"
+                >
+                  Add Image
+                </Button>
+                <Text 
+                  fontSize={'xs'} 
+                  fontWeight={'600'} 
+                  color={postText.length > 450 ? "red.500" : useColorModeValue("gray.600", "gray.400")}
+                >
+                  {postText.length}/500
+                </Text>
+              </Flex>
               <Input type="file" hidden ref={imageRef} onChange={handleImageChange} />
-              <BsFillImageFill style={{marginLeft:"5px",cursor:"pointer"}} size={20} onClick={()=>imageRef.current.click()} />
             </FormControl>
             {imgUrl &&(
-              <Flex mt={5} w={'full'} position={'relative'}>
-                <Image src={imgUrl} alt="selected img" />
-                <CloseButton onClick={()=>setImgUrl('')} bg={'gray.800'} position={'absolute'} top={2} right={2} size={'sm'} />
+              <Flex mt={4} w={'full'} position={'relative'} borderRadius="lg" overflow="hidden">
+                <Image src={imgUrl} alt="selected img" w="full" />
+                <CloseButton 
+                  onClick={()=>setImgUrl('')} 
+                  bg={useColorModeValue('white', 'gray.800')}
+                  position={'absolute'} 
+                  top={2} 
+                  right={2} 
+                  size={'md'}
+                  borderRadius="full"
+                  _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
+                />
               </Flex>
             )}
           </ModalBody>
 
-          <ModalFooter>
-            <Button isLoading={loading} colorScheme='blue' mr={3} onClick={handleCreatePost}>
+          <ModalFooter gap={3}>
+            <Button 
+              variant="ghost" 
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+            <Button 
+              isLoading={loading} 
+              onClick={handleCreatePost}
+              isDisabled={!postText.trim()}
+            >
               Post
             </Button>
           </ModalFooter>
