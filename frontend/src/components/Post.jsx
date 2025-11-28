@@ -6,13 +6,13 @@ import useShowToast from "@/hooks/useShowToast";
 import { formatDistanceToNow } from "date-fns";
 
 const Post = ({post,postedBy}) => {
-   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.900', 'gray.100');
   const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
+  const hoverBorderColor = useColorModeValue('brand.300', 'brand.700');
 
   
-  const [liked]=useState(false);
   const [user,setUser]=useState(null);
   const showToast=useShowToast();
   const Navigate=useNavigate();
@@ -52,7 +52,7 @@ const Post = ({post,postedBy}) => {
         transition="all 0.3s"
         className="card-hover"
         _hover={{
-          borderColor: useColorModeValue('brand.300', 'brand.700'),
+          borderColor: hoverBorderColor,
         }}
       >
         <Flex flexDirection={"column"} alignItems={"center"}>
@@ -69,28 +69,29 @@ const Post = ({post,postedBy}) => {
           />
           <Box flex={1} w={"1px"} bg={borderColor} my={2}></Box>
 
-          <Box position={"relative"} w={"40px"} h={"40px"}>
+          <Box position={"relative"} w={"42px"} h={"38px"}>
             {post.replies.length===0 && <Text textAlign={"center"}>🤔</Text>}
             {post.replies[0] && (
               <Avatar
-              name="Mark Zuckerberg"
+              name={user.name}
               src={post.replies[0].userProfilePic}
               size={"xs"}
-              position={" solute"}
-              top={"0px"}
-              left={"15px"}
+              position={"absolute"}
+              bottom={"0px"}
+              left={"50%"}
+              transform={"translateX(-50%)"}
               border="2px solid"
               borderColor={bgColor}
             />
             )}
             {post.replies[1] && (
               <Avatar
-              name="Mark Zuckerberg"
+              name={user.name}
               src={post.replies[1].userProfilePic}
               size={"xs"}
               position={"absolute"}
-              bottom={"0px"}
-              left={"15px"}
+              top={"0px"}
+              left={"-2px"}
               border="2px solid"
               borderColor={bgColor}
             />
@@ -102,8 +103,8 @@ const Post = ({post,postedBy}) => {
               src={post.replies[2].userProfilePic}
               size={"xs"}
               position={"absolute"}
-              bottom={"0px"}
-              right={"-5px"}
+              top={"0px"}
+              right={"-2px"}
               border="2px solid"
               borderColor={bgColor}
             />)}

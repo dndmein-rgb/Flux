@@ -16,8 +16,8 @@ const App = () => {
   const user=useRecoilValue(userAtom)
   return (
     <Container 
-      maxW="680px" 
-      px={{ base: 4, md: 6 }}
+      maxW="620px" 
+      px={{ base: 4, md: 4 }}
       py={{ base: 4, md: 6 }}
     >
       <Header />

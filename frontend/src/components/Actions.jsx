@@ -15,6 +15,7 @@ import {
   ModalOverlay,
   Text,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -22,15 +23,17 @@ import { useRecoilValue } from "recoil";
 const Actions = ({ post_ }) => {
    const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const user=useRecoilValue(userAtom)
-  const [liked,setLiked] = useState(post_?.likes?.includes(user?._id) || false);
   const showToast=useShowToast();
+
+  const [liked,setLiked] = useState(post_?.likes?.includes(user?._id) || false);
   const [post,setPost]=useState(post_);
   const [isLiking, setIsLiking] = useState(false);
+  const [reply ,setReply]=useState("");
+  const [isReplying,setIsReplying]=useState(false);
 
   if (!post_) return null;
-
- 
 
 
   const handleLikeAndUnlike=async()=>{
@@ -64,6 +67,37 @@ const Actions = ({ post_ }) => {
     }
   }
 
+  const handleReply=async()=>{
+    setIsReplying(true);
+    if(!user) showToast("Error", "Please login to reply to a post", "error");
+    if(!reply) return;
+    try {
+      const res=await fetch(`/api/posts/reply/${post._id}`,{
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          text:reply,
+        })
+      })
+      const data=await res.json();
+      if(data.error){
+        showToast("Error", data.error, "error");
+
+        return;
+      }
+      setPost({...post,replies:[...post.replies,data.reply]});
+      setReply("");
+      showToast("Success", "Reply posted", "success");
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    }finally{
+      onClose();
+      setIsReplying(false);
+    }
+  }
+
   return (
     <Flex flexDirection={"column"} gap={2}>
     <Flex
@@ -81,7 +115,10 @@ const Actions = ({ post_ }) => {
         viewBox="0 0 24 22"
         width="20"
         onClick={handleLikeAndUnlike}
+        disabled={isLiking}
       >
+        <title>Like</title>
+      
         <path
           d="M1 7.66c0 4.575 3.899 9.086 9.987 12.934.338.203.74.406 1.013.406.283 0 .686-.203 1.013-.406C19.1 16.746 23 12.234 23 7.66 23 3.736 20.245 1 16.672 1 14.603 1 12.98 1.94 12 3.352 11.042 1.952 9.408 1 7.328 1 3.766 1 1 3.736 1 7.66Z"
           stroke="currentColor"
@@ -97,6 +134,7 @@ const Actions = ({ post_ }) => {
         role="img"
         viewBox="0 0 24 24"
         width="20"
+        onClick={onOpen}
       >
         <title>Comment</title>
         <path
@@ -107,7 +145,59 @@ const Actions = ({ post_ }) => {
           strokeWidth="2"
         ></path>
       </svg>
-      <svg
+      <RepostSvg/>
+      <ShareSvg/>
+     
+     
+      </Flex>
+
+      <Flex gap={2} alignItems={"center"}>
+        <Text color={secondaryTextColor} fontSize={"sm"} fontWeight="500">
+          {post.replies.length} replies
+        </Text>
+        <Box
+          w={0.5}
+          h={0.5}
+          borderRadius={"full"}
+          bg={secondaryTextColor}
+        ></Box>
+        <Text color={secondaryTextColor} fontSize={"sm"} fontWeight="500">
+          {post.likes.length} likes
+        </Text>
+      </Flex>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <Input value={reply} onChange={(e)=>{setReply(e.target.value)}}  placeholder='Reply goes here...' />
+            </FormControl>
+
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' variant='outline' isLoading={isReplying} disabled={!reply} onClick={handleReply} size={'sm'} mr={3}>
+              Reply
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+    </Flex>
+  );
+};
+
+export default Actions;
+
+const RepostSvg=()=>{
+   return(
+    <svg
         aria-label="Repost"
         color="currentColor"
         fill="currentColor"
@@ -122,7 +212,11 @@ const Actions = ({ post_ }) => {
           d="M19.998 9.497a1 1 0 0 0-1 1v4.228a3.274 3.274 0 0 1-3.27 3.27h-5.313l1.791-1.787a1 1 0 0 0-1.412-1.416L7.29 18.287a1.004 1.004 0 0 0-.294.707v.001c0 .023.012.042.013.065a.923.923 0 0 0 .281.643l3.502 3.504a1 1 0 0 0 1.414-1.414l-1.797-1.798h5.318a5.276 5.276 0 0 0 5.27-5.27v-4.228a1 1 0 0 0-1-1Zm-6.41-3.496-1.795 1.795a1 1 0 1 0 1.414 1.414l3.5-3.5a1.003 1.003 0 0 0 0-1.417l-3.5-3.5a1 1 0 0 0-1.414 1.414l1.794 1.794H8.27A5.277 5.277 0 0 0 3 9.271V13.5a1 1 0 0 0 2 0V9.271a3.275 3.275 0 0 1 3.271-3.27Z"
         ></path>
       </svg>
-      <svg
+   )
+}
+const ShareSvg=()=>{
+  return(
+     <svg
         aria-label="Share"
         fill="rgb(243, 245, 247)"
         height="20"
@@ -149,24 +243,5 @@ const Actions = ({ post_ }) => {
           strokeWidth="2"
         ></polygon>
       </svg>
-      </Flex>
-
-      <Flex gap={2} alignItems={"center"}>
-        <Text color={secondaryTextColor} fontSize={"sm"} fontWeight="500">
-          {post.replies.length} replies
-        </Text>
-        <Box
-          w={0.5}
-          h={0.5}
-          borderRadius={"full"}
-          bg={secondaryTextColor}
-        ></Box>
-        <Text color={secondaryTextColor} fontSize={"sm"} fontWeight="500">
-          {post.likes.length} likes
-        </Text>
-      </Flex>
-    </Flex>
-  );
-};
-
-export default Actions;
+  )
+}
