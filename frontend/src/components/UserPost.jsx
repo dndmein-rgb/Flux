@@ -96,12 +96,7 @@ const UserPost = ({postImg,postTitle,likes ,replies}) => {
             <Image src={postImg} w={"full"} />
           </Box>)}
           <Flex gap={3} my={1}>
-            <Actions liked={liked} setLiked={setLiked}/>
-          </Flex>
-          <Flex gap={2} alignItems={'center'} mt={2}>
-            <Text color={secondaryTextColor} fontSize={'sm'} fontWeight="500">{replies} replies</Text>
-            <Box w={0.5} h={0.5} borderRadius={'full'} bg={secondaryTextColor}></Box>
-            <Text color={secondaryTextColor} fontSize={'sm'} fontWeight="500">{likes} likes</Text>
+            <Actions post_={{ replies: Array(replies).fill({}), likes: Array(likes).fill({}) }}/>
           </Flex>
         </Flex>
       </Flex>

@@ -12,7 +12,7 @@ const Post = ({post,postedBy}) => {
   const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
 
   
-  const [liked,setLiked]=useState(false);
+  const [liked]=useState(false);
   const [user,setUser]=useState(null);
   const showToast=useShowToast();
   const Navigate=useNavigate();
@@ -22,7 +22,6 @@ const Post = ({post,postedBy}) => {
       try {
         const res=await fetch(`/api/users/profile/${postedBy}`);
         const data=await res.json();
-        console.log(data);
         if(data.error){
           showToast("Error",data.error,"error");
           return;
@@ -140,13 +139,9 @@ const Post = ({post,postedBy}) => {
             <Image src={post.img} w={"full"} />
           </Box>)}
           <Flex gap={3} my={1}>
-            <Actions liked={liked} setLiked={setLiked}/>
+            <Actions post_={post}/>
           </Flex>
-          <Flex gap={2} alignItems={'center'} mt={2}>
-            <Text color={secondaryTextColor} fontSize={'sm'} fontWeight="500">{post.replies.length} replies</Text>
-            <Box w={0.5} h={0.5} borderRadius={'full'} bg={secondaryTextColor}></Box>
-            <Text color={secondaryTextColor} fontSize={'sm'} fontWeight="500">{post.likes.length} likes</Text>
-          </Flex>
+          
         </Flex>
       </Flex>
     </Link>
