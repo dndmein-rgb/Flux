@@ -1,11 +1,9 @@
 import { Avatar, Box, Flex, Image, Text, useColorModeValue } from "@chakra-ui/react";
-import React, { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router";
 import Actions from "./Actions";
 
 const UserPost = ({postImg,postTitle,likes ,replies}) => {
-  const [liked,setLiked]=useState(false);
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const textColor = useColorModeValue('gray.900', 'gray.100');
@@ -96,7 +94,7 @@ const UserPost = ({postImg,postTitle,likes ,replies}) => {
             <Image src={postImg} w={"full"} />
           </Box>)}
           <Flex gap={3} my={1}>
-            <Actions post_={{ replies: Array(replies).fill({}), likes: Array(likes).fill({}) }}/>
+            <Actions post={{ replies: Array(replies).fill({}), likes: Array(likes).fill({}) }}/>
           </Flex>
         </Flex>
       </Flex>

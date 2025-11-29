@@ -1,26 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router'
-import {Button, Flex, Heading, Text, VStack, useColorModeValue, Box, Spinner} from '@chakra-ui/react'
-import  useShowtoast  from '../hooks/useShowToast';
+import { useEffect, useState } from 'react'
+import { Flex, Spinner } from '@chakra-ui/react'
+import useShowtoast from '../hooks/useShowToast';
 import Post from '../components/Post';
-
+import { useRecoilState } from 'recoil';
+import postAtom from '../atoms/postAtom';
 
 const HomePage = () => {
   const [loading, setLoading] = useState(true);
-  const [posts,setPosts]=useState([]);
+  const [posts, setPosts] = useRecoilState(postAtom)
   const showToast = useShowtoast();
-  
-  // All hooks must be called before any conditional returns
-  const headingGradient = useColorModeValue(
-    'linear(to-r, brand.600, purple.600)',
-    'linear(to-r, brand.400, purple.400)'
-  );
-  const textColor = useColorModeValue('gray.600', 'gray.400');
   
   // Add your data fetching useEffect here
   useEffect(() => {
     const getFeedPosts = async () => {
       setLoading(true);
+      setPosts([]);
       try {
         const res=await fetch("/api/posts/feed");
         const data=await res.json();
@@ -38,7 +32,7 @@ const HomePage = () => {
     };
     
     getFeedPosts();
-  }, [showToast]);
+  }, [showToast,setPosts]);
   
 
   

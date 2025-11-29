@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Avatar, Box, Button, Divider, Flex, Image, Spinner, Text, useColorModeValue } from "@chakra-ui/react";
 import Actions from "@/components/Actions";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import useShowToast from "@/hooks/useShowToast";
 import { useParams ,useNavigate} from "react-router";
 import { formatDistanceToNow } from "date-fns";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
+import postsAtom from "@/atoms/postAtom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import Comment from "@/components/Comment";
 
@@ -22,14 +23,17 @@ const PostPage = () => {
   const bannerBg = useColorModeValue('blue.50', 'gray.800');
 
   const { user, loading } = useGetUserProfile();
-  const [post, setPost] = useState(null);
+  const [posts, setPosts] = useRecoilState(postsAtom);
   const showToast = useShowToast();
   const { pId } = useParams();
   const currentUser = useRecoilValue(userAtom);
   const navigate=useNavigate();
 
+  const currentPost = posts[0];
+
   useEffect(() => {
-    const getPosts = async () => {
+    const getPost = async () => {
+      setPosts([]);
       try {
         const res = await fetch(`/api/posts/${pId}`);
         const data = await res.json();
@@ -37,17 +41,17 @@ const PostPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        setPost(data);
+        setPosts([data]);
       } catch (error) {
         showToast("Error", error.message, "error");
       }
     };
-    getPosts();
-  }, [showToast, pId]);
+    getPost();
+  }, [showToast, pId, setPosts]);
   const handleDeletePost = async () => {
     try {
       if(!window.confirm("Are you sure you want to delete this post?")) return;
-      const res = await fetch(`/api/posts/${post._id}`, {
+      const res = await fetch(`/api/posts/${currentPost._id}`, {
         method: "DELETE"
       });
       const data = await res.json();
@@ -74,7 +78,7 @@ const PostPage = () => {
     );
   }
 
-  if (!post) return null;
+  if (!currentPost) return null;
   
   return (
     <Box className="animate-fade-in">
@@ -103,15 +107,18 @@ const PostPage = () => {
           </Flex>
           <Flex gap={3} alignItems={'center'}>
             <Text fontSize={"sm"} textAlign={'right'} color={secondaryTextColor} whiteSpace="nowrap">
-              {formatDistanceToNow(new Date(post.createdAt)).replace('about ', '')} ago
+              {(() => {
+                const timeAgo = formatDistanceToNow(new Date(currentPost.createdAt)).replace('about ', '');
+                return timeAgo === 'less than a minute' ? 'just now' : `${timeAgo} ago`;
+              })()}
             </Text>
             {currentUser?._id === user._id && <DeleteIcon cursor={'pointer'} size={20} onClick={handleDeletePost} />}
           </Flex>
         </Flex>
 
-        <Text my={4} color={textColor} fontSize="md">{post.text}</Text>
+        <Text my={4} color={textColor} fontSize="md">{currentPost.text}</Text>
         
-        {post.img && (
+        {currentPost.img && (
           <Box 
             borderRadius="xl" 
             overflow={"hidden"} 
@@ -119,12 +126,12 @@ const PostPage = () => {
             borderColor={borderColor}
             mb={4}
           >
-            <Image src={post.img} w={"full"} />
+            <Image src={currentPost.img} w={"full"} />
           </Box>
         )}
         
         <Flex gap={3} my={3}>
-          <Actions post_={post} />
+          <Actions post={currentPost} />
         </Flex>
         
        
@@ -150,8 +157,8 @@ const PostPage = () => {
       </Flex>
 
       <Divider borderColor={borderColor} my={6} />
-        {post.replies.map(reply=>(
-          <Comment key={reply._id} reply={reply} />
+        {currentPost.replies.map(reply=>(
+          <Comment key={reply._id} reply={reply} lastReply={reply._id===currentPost.replies[currentPost.replies.length-1]._id}/>
         ))}
     </Box>
   );

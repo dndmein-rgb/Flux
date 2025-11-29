@@ -1,3 +1,4 @@
+import postAtom from "@/atoms/postAtom";
 import { userAtom } from "@/atoms/userAtom";
 import usePreviewImage from "@/hooks/usePreviewImage";
 import useShowToast from "@/hooks/useShowToast";
@@ -5,9 +6,11 @@ import { AddIcon } from "@chakra-ui/icons";
 import { Button, CloseButton, Flex, FormControl, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { BsFillImageFill } from "react-icons/bs";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {useParams} from 'react-router';
 
 const CreatePost = () => {
+  const {username}=useParams();
   const [loading,setLoading]=useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [postText,setPostText]=useState('')
@@ -15,6 +18,20 @@ const CreatePost = () => {
   const imageRef=useRef();
   const user=useRecoilValue(userAtom)
   const showToast=useShowToast();
+  const [posts,setPosts]=useRecoilState(postAtom)
+  
+  const buttonShadow = useColorModeValue(
+    '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
+    '0 10px 15px -3px rgba(59, 130, 246, 0.4)'
+  );
+  const buttonHoverShadow = useColorModeValue(
+    '0 20px 25px -5px rgba(0, 0, 0, 0.2)',
+    '0 20px 25px -5px rgba(59, 130, 246, 0.5)'
+  );
+  const charCountColor = useColorModeValue("gray.600", "gray.400");
+  const closeButtonBg = useColorModeValue('white', 'gray.800');
+  const closeButtonHoverBg = useColorModeValue('gray.100', 'gray.700');
+
   const handleTextChange=(e)=>{
     const inputText = e.target.value;
     if(inputText.length > 500){
@@ -44,6 +61,9 @@ const CreatePost = () => {
         return
       }
       showToast('Success', 'Post created successfully', 'success')
+      if(username===user.username){
+        setPosts([data,...posts])
+      }
       onClose();
       setPostText('');
       setImgUrl('');
@@ -58,23 +78,16 @@ const CreatePost = () => {
       <Button
         position={"fixed"}
         bottom={10}
-        right={10}
-        leftIcon={<AddIcon />}
-        size="lg"
-        boxShadow={useColorModeValue(
-          '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
-          '0 10px 15px -3px rgba(59, 130, 246, 0.4)'
-        )}
+        right={5}
+        size={{base:'sm' ,sm:'md'}}
+        boxShadow={buttonShadow}
         onClick={onOpen}
         _hover={{
           transform: 'translateY(-2px)',
-          boxShadow: useColorModeValue(
-            '0 20px 25px -5px rgba(0, 0, 0, 0.2)',
-            '0 20px 25px -5px rgba(59, 130, 246, 0.5)'
-          ),
+          boxShadow: buttonHoverShadow,
         }}
       >
-        Post
+        <AddIcon />
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -115,7 +128,7 @@ const CreatePost = () => {
                 <Text 
                   fontSize={'xs'} 
                   fontWeight={'600'} 
-                  color={postText.length > 450 ? "red.500" : useColorModeValue("gray.600", "gray.400")}
+                  color={postText.length > 450 ? "red.500" : charCountColor}
                 >
                   {postText.length}/500
                 </Text>
@@ -127,13 +140,13 @@ const CreatePost = () => {
                 <Image src={imgUrl} alt="selected img" w="full" />
                 <CloseButton 
                   onClick={()=>setImgUrl('')} 
-                  bg={useColorModeValue('white', 'gray.800')}
+                  bg={closeButtonBg}
                   position={'absolute'} 
                   top={2} 
                   right={2} 
                   size={'md'}
                   borderRadius="full"
-                  _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
+                  _hover={{ bg: closeButtonHoverBg }}
                 />
               </Flex>
             )}

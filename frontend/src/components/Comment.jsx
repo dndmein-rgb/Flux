@@ -1,11 +1,10 @@
 import { Avatar, Divider, Flex, Text, useColorModeValue } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React from 'react'
 
 
-const Comment = ({reply}) => {
-    const [liked, setLiked] = useState(false)
+const Comment = ({reply,lastReply}) => {
     const textColor = useColorModeValue('gray.900', 'gray.100');
-    const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
+ 
     const borderColor = useColorModeValue('gray.200', 'gray.700');
     
   return (
@@ -27,7 +26,7 @@ const Comment = ({reply}) => {
         
         </Flex>
     </Flex>
-    <Divider borderColor={borderColor} />
+    {!lastReply ? <Divider /> : null}
     </>
   )
 }

@@ -117,10 +117,12 @@ export const replyToPost = async (req, res) => {
             username: req.user.username,
         };
 
-        post.replies.push(reply);
+        post.replies.unshift(reply);
         await post.save();
 
-        res.status(200).json({ message: "Reply added successfully", post });
+        // Return the saved reply with its generated _id
+        const savedReply = post.replies[0];
+        res.status(200).json(savedReply);
 
     } catch (error) {
         console.log("Error in replyToPost:", error.message);

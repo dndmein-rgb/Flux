@@ -1,12 +1,13 @@
 import { Avatar, Box, Flex, Image, Text, useColorModeValue } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Actions from "./Actions";
 import useShowToast from "@/hooks/useShowToast";
 import { formatDistanceToNow } from "date-fns";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
+import postsAtom from "@/atoms/postAtom";
 
 const Post = ({post,postedBy}) => {
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -19,6 +20,7 @@ const Post = ({post,postedBy}) => {
   const [user,setUser]=useState(null);
   const showToast=useShowToast();
   const Navigate=useNavigate();
+  const [posts,setPosts]=useRecoilState(postsAtom);
   const currentUser=useRecoilValue(userAtom);
   //fetch the user
   useEffect(()=>{
@@ -52,6 +54,7 @@ const Post = ({post,postedBy}) => {
         return;
       }
       showToast("Success", "Post deleted successfully", "success");
+      setPosts(posts.filter((p)=>p._id!==post._id));
     } catch (error) {
       showToast("Error",error.message,"error");
     }
@@ -148,7 +151,10 @@ const Post = ({post,postedBy}) => {
                 <Image src="/verified.png" w={4} h={4} />
             </Flex>
             <Flex gap={3} alignItems={'center'}>
-                <Text fontSize={"sm"} w={36} textAlign={'right'} color={secondaryTextColor}>{formatDistanceToNow(new Date(post.createdAt)).replace('about ', '')} ago</Text>
+                <Text fontSize={"sm"} w={36} textAlign={'right'} color={secondaryTextColor}>{(() => {
+                  const timeAgo = formatDistanceToNow(new Date(post.createdAt)).replace('about ', '');
+                  return timeAgo === 'less than a minute' ? 'just now' : `${timeAgo} ago`;
+                })()}</Text>
                 {currentUser?._id===user._id && <DeleteIcon size={20} onClick={handleDeletePost}/>}
             </Flex>
           </Flex>
@@ -164,7 +170,7 @@ const Post = ({post,postedBy}) => {
             <Image src={post.img} w={"full"} />
           </Box>)}
           <Flex gap={3} my={1}>
-            <Actions post_={post}/>
+            <Actions post={post}/>
           </Flex>
           
         </Flex>

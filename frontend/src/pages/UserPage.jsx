@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserHeader from '../components/UserHeader.jsx'
 import { useParams } from 'react-router';
 import useShowToast from '@/hooks/useShowToast.js';
 import { Flex, Spinner, VStack, useColorModeValue } from '@chakra-ui/react';
 import Post from '@/components/Post.jsx';
 import useGetUserProfile from '@/hooks/useGetUserProfile.js';
+import { useRecoilState } from 'recoil';
+import postAtom from '@/atoms/postAtom.js';
 
 const UserPage = () => {
   const {user,loading}=useGetUserProfile();
   const {username}=useParams();
   const showToast=useShowToast();
-  const [posts,setPosts]=useState([]);
+  const [posts,setPosts]=useRecoilState(postAtom);
   const [fetchingPosts,setFetchingPosts]=useState(true);
   const notFoundColor = useColorModeValue('#0f172a', '#f1f5f9');
 
@@ -33,7 +35,7 @@ const UserPage = () => {
       }
   }
     getPosts();
-  },[username,showToast])
+  },[username,showToast,setPosts])
 
   if(!user && loading) return (
     <Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
@@ -61,7 +63,7 @@ const UserPage = () => {
         <Spinner size={'xl'}/>
       </Flex>)}
        {posts.map((post)=>(
-        <Post key={post._id} post={post} postedBy={post.postedBy}/>
+        <Post key={post._id} post={post} postedBy={post.postedBy} />
        ))}
     </VStack>
   )
