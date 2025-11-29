@@ -1,9 +1,8 @@
 import { Avatar, Divider, Flex, Text, useColorModeValue } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { BsThreeDots } from 'react-icons/bs'
-import Actions from './Actions'
 
-const Comment = ({comment,createdAt,likes,username,userAvatar}) => {
+
+const Comment = ({reply}) => {
     const [liked, setLiked] = useState(false)
     const textColor = useColorModeValue('gray.900', 'gray.100');
     const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
@@ -13,7 +12,7 @@ const Comment = ({comment,createdAt,likes,username,userAvatar}) => {
     <>
     <Flex gap={4} py={4} my={2} w={'full'}>
         <Avatar 
-          src={userAvatar} 
+          src={reply.userProfilePic} 
           size={"sm"} 
           name="Mark Zuckerberg"
           border="2px solid"
@@ -21,17 +20,11 @@ const Comment = ({comment,createdAt,likes,username,userAvatar}) => {
         />
         <Flex gap={2} w={'full'} flexDirection={'column'}>
           <Flex w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-            <Text fontSize={'sm'} fontWeight={'bold'} color={textColor}>{username}</Text>
-            <Flex gap={2} alignItems={'center'}>
-                <Text fontSize={'sm'} color={secondaryTextColor}>{createdAt}</Text>
-                <BsThreeDots color={secondaryTextColor} />
-            </Flex>
+            <Text fontSize={'sm'} fontWeight={'bold'} color={textColor}>{reply.username}</Text>
+           
           </Flex>
-          <Text color={textColor} fontSize="sm">{comment}</Text>
-          <Actions liked={liked} setLiked={setLiked}/>
-          <Text fontSize={'sm'} color={secondaryTextColor} fontWeight="500">
-              {100+(likes ? 1 : 0) } likes
-          </Text>
+          <Text color={textColor} fontSize="sm">{reply.text}</Text>
+        
         </Flex>
     </Flex>
     <Divider borderColor={borderColor} />

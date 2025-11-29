@@ -1,16 +1,80 @@
-import React, { useState } from "react";
-import UserHeader from "../components/UserHeader";
-import { Avatar, Box, Button, Divider, Flex, Image, Text, useColorModeValue } from "@chakra-ui/react";
-import { BsThreeDots } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { Avatar, Box, Button, Divider, Flex, Image, Spinner, Text, useColorModeValue } from "@chakra-ui/react";
 import Actions from "@/components/Actions";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
+import useShowToast from "@/hooks/useShowToast";
+import { useParams ,useNavigate} from "react-router";
+import { formatDistanceToNow } from "date-fns";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "@/atoms/userAtom";
+import { DeleteIcon } from "@chakra-ui/icons";
 import Comment from "@/components/Comment";
 
 const PostPage = () => {
-  const [liked, setLiked] = useState(false)
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const textColor = useColorModeValue('gray.900', 'gray.100');
   const secondaryTextColor = useColorModeValue('gray.600', 'gray.400');
+  const boxShadow = useColorModeValue(
+    '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    '0 4px 6px -1px rgba(0, 0, 0, 0.4)'
+  );
+  const bannerBg = useColorModeValue('blue.50', 'gray.800');
+
+  const { user, loading } = useGetUserProfile();
+  const [post, setPost] = useState(null);
+  const showToast = useShowToast();
+  const { pId } = useParams();
+  const currentUser = useRecoilValue(userAtom);
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    const getPosts = async () => {
+      try {
+        const res = await fetch(`/api/posts/${pId}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        setPost(data);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }
+    };
+    getPosts();
+  }, [showToast, pId]);
+  const handleDeletePost = async () => {
+    try {
+      if(!window.confirm("Are you sure you want to delete this post?")) return;
+      const res = await fetch(`/api/posts/${post._id}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+      showToast("Success", data.message, "success");
+      navigate(`/${user.username}`);
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    }
+  };
+
+  if (!user && loading) {
+    return (
+      <Flex
+        justifyContent={"center"}
+        alignItems={"center"}
+        h={"100vh"}
+      >
+        <Spinner size={"xl"} />
+      </Flex>
+    );
+  }
+
+  if (!post) return null;
   
   return (
     <Box className="animate-fade-in">
@@ -20,55 +84,50 @@ const PostPage = () => {
         borderRadius="2xl"
         border="1px solid"
         borderColor={borderColor}
-        boxShadow={useColorModeValue(
-          '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-          '0 4px 6px -1px rgba(0, 0, 0, 0.4)'
-        )}
+        boxShadow={boxShadow}
         mb={4}
       >
         <Flex justify="space-between" align="center" mb={4}>
           <Flex gap={3} alignItems={"center"}>
             <Avatar 
-              src="/zuck-avatar.png" 
+              src={user.profilePic}
               size={"md"} 
               name="Mark Zuckerberg"
               border="2px solid"
               borderColor={borderColor}
             />
             <Flex align="center" gap={1}>
-              <Text fontSize={"sm"} fontWeight={"bold"} color={textColor}>markzuckerberg</Text>
+              <Text fontSize={"sm"} fontWeight={"bold"} color={textColor}>{user.username}</Text>
               <Image src="/verified.png" w={4} h={4} />
             </Flex>
           </Flex>
           <Flex gap={3} alignItems={'center'}>
-            <Text fontSize={"sm"} color={secondaryTextColor}>1d</Text>
-            <Box as={BsThreeDots} color={secondaryTextColor} />
+            <Text fontSize={"sm"} textAlign={'right'} color={secondaryTextColor} whiteSpace="nowrap">
+              {formatDistanceToNow(new Date(post.createdAt)).replace('about ', '')} ago
+            </Text>
+            {currentUser?._id === user._id && <DeleteIcon cursor={'pointer'} size={20} onClick={handleDeletePost} />}
           </Flex>
         </Flex>
 
-        <Text my={4} color={textColor} fontSize="md">Let's talk about Threads.</Text>
+        <Text my={4} color={textColor} fontSize="md">{post.text}</Text>
         
-        <Box 
-          borderRadius="xl" 
-          overflow={"hidden"} 
-          border={"1px solid"} 
-          borderColor={borderColor}
-          mb={4}
-        >
-          <Image src="/post1.png" w={"full"}/>
-        </Box>
+        {post.img && (
+          <Box 
+            borderRadius="xl" 
+            overflow={"hidden"} 
+            border={"1px solid"} 
+            borderColor={borderColor}
+            mb={4}
+          >
+            <Image src={post.img} w={"full"} />
+          </Box>
+        )}
         
         <Flex gap={3} my={3}>
-          <Actions liked={liked} setLiked={setLiked} />
+          <Actions post_={post} />
         </Flex>
         
-        <Flex gap={2} alignItems={'center'}>
-          <Text color={secondaryTextColor} fontSize={'sm'} fontWeight="500">238 replies</Text>
-          <Box w={0.5} h={0.5} bg={secondaryTextColor} borderRadius={'full'}></Box>
-          <Text color={secondaryTextColor} fontSize={'sm'} fontWeight="500">
-            {121+ (liked ?1:0)} likes
-          </Text>
-        </Flex>
+       
       </Box>
 
       <Divider borderColor={borderColor} my={6} />
@@ -76,7 +135,7 @@ const PostPage = () => {
       <Flex 
         justifyContent={'space-between'} 
         align="center"
-        bg={useColorModeValue('blue.50', 'gray.800')}
+        bg={bannerBg}
         p={4}
         borderRadius="xl"
         mb={6}
@@ -91,27 +150,9 @@ const PostPage = () => {
       </Flex>
 
       <Divider borderColor={borderColor} my={6} />
-      <Comment 
-        comment="Looks really good!"
-        createdAt="2d"
-        likes={100}
-        username="johndoe"
-        userAvatar='https://picsum.photos/400/400?random=1'
-      />
-      <Comment 
-        comment="Interesting!"
-        createdAt="1d"
-        likes={20}
-        username="Harry"
-        userAvatar='https://picsum.photos/400/400?random=2'
-      />
-      <Comment 
-        comment="That's great!"
-        createdAt="5d"
-        likes={300}
-        username="John"
-        userAvatar='https://picsum.photos/400/400?random=3'
-      />
+        {post.replies.map(reply=>(
+          <Comment key={reply._id} reply={reply} />
+        ))}
     </Box>
   );
 };

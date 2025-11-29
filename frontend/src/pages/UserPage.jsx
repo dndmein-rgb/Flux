@@ -4,36 +4,18 @@ import { useParams } from 'react-router';
 import useShowToast from '@/hooks/useShowToast.js';
 import { Flex, Spinner, VStack, useColorModeValue } from '@chakra-ui/react';
 import Post from '@/components/Post.jsx';
+import useGetUserProfile from '@/hooks/useGetUserProfile.js';
 
 const UserPage = () => {
-  const [user,setUser]=useState(null);
+  const {user,loading}=useGetUserProfile();
   const {username}=useParams();
   const showToast=useShowToast();
-  const [loading,setLoading]=useState(true);
   const [posts,setPosts]=useState([]);
   const [fetchingPosts,setFetchingPosts]=useState(true);
   const notFoundColor = useColorModeValue('#0f172a', '#f1f5f9');
 
   useEffect(()=>{
-    const getUser=async()=>{
-      setLoading(true);
-      try {
-      const res=await fetch(`/api/users/profile/${username}`);
-      const data=await res.json();
-      if(data.error){
-        showToast("Error",data.error,"error");
-        return;
-      }
-      setUser(data);
-      
-    } catch (error) {
-      showToast("Error", error.message, "error");
-      setPosts([]);
-    }finally{
-      setLoading(false);
-      
-    }
-  }
+
   const getPosts=async()=>{
     setFetchingPosts(true);
       try {
@@ -50,7 +32,6 @@ const UserPage = () => {
         setFetchingPosts(false);
       }
   }
-    getUser();
     getPosts();
   },[username,showToast])
 

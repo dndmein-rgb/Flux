@@ -17,10 +17,10 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
 
-const Actions = ({ post_ }) => {
+const Actions = ({post_ }) => {
    const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -32,6 +32,14 @@ const Actions = ({ post_ }) => {
   const [isLiking, setIsLiking] = useState(false);
   const [reply ,setReply]=useState("");
   const [isReplying,setIsReplying]=useState(false);
+
+  // Sync local state with prop changes
+  useEffect(() => {
+    if (post_) {
+      setPost(post_);
+      setLiked(post_?.likes?.includes(user?._id) || false);
+    }
+  }, [post_, user?._id]);
 
   if (!post_) return null;
 
@@ -107,6 +115,7 @@ const Actions = ({ post_ }) => {
       }}
     >
       <svg
+        cursor={"pointer"}
         aria-label="Like"
         color={liked ? "rgb(237, 73, 86)" : ""}
         fill={liked ? "rgb(237, 73, 86)" : "transparent"}
@@ -128,6 +137,7 @@ const Actions = ({ post_ }) => {
 
       <svg
         aria-label="Comment"
+        cursor={"pointer"}
         color=""
         fill=""
         height="20"

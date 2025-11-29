@@ -51,6 +51,7 @@ const Header = () => {
             </Link>}
             <Image 
                 cursor={'pointer'} 
+                mr={50}
                 w={6} 
                 h={6}
                 objectFit="contain" 

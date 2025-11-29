@@ -63,7 +63,7 @@ const Post = ({post,postedBy}) => {
  
   
   return (
-    <Link to={`/${user.username}/post /${post._id}`}>
+    <Link to={`/${user.username}/post/${post._id}`}>
       <Flex 
         gap={3} 
         mb={4} 
