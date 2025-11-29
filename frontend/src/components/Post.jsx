@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router";
 import Actions from "./Actions";
 import useShowToast from "@/hooks/useShowToast";
 import { formatDistanceToNow } from "date-fns";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "@/atoms/userAtom";
 
 const Post = ({post,postedBy}) => {
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -16,6 +19,7 @@ const Post = ({post,postedBy}) => {
   const [user,setUser]=useState(null);
   const showToast=useShowToast();
   const Navigate=useNavigate();
+  const currentUser=useRecoilValue(userAtom);
   //fetch the user
   useEffect(()=>{
     const getUser=async()=>{
@@ -34,6 +38,25 @@ const Post = ({post,postedBy}) => {
     }
     getUser();
   },[postedBy,showToast])
+
+  const handleDeletePost=async(e)=>{
+    try {
+      e.preventDefault(); 
+      if(!window.confirm("Are you sure you want to delete this post?"))return;
+      const res=await fetch(`/api/posts/${post._id}`,{
+        method:"DELETE",
+      });
+      const data=await res.json();
+      if(data.error){
+        showToast("Error", data.error, "error");
+        return;
+      }
+      showToast("Success", "Post deleted successfully", "success");
+    } catch (error) {
+      showToast("Error",error.message,"error");
+    }
+  }
+
   if(!user)return null;
 
 
@@ -126,6 +149,7 @@ const Post = ({post,postedBy}) => {
             </Flex>
             <Flex gap={3} alignItems={'center'}>
                 <Text fontSize={"sm"} w={36} textAlign={'right'} color={secondaryTextColor}>{formatDistanceToNow(new Date(post.createdAt)).replace('about ', '')} ago</Text>
+                {currentUser?._id===user._id && <DeleteIcon size={20} onClick={handleDeletePost}/>}
             </Flex>
           </Flex>
           <Text fontSize={"sm"} color={textColor} mt={2}>{post.text}</Text>

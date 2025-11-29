@@ -81,7 +81,7 @@ const UserHeader = ({user}) => {
         user.followers.pop();
       }else{
         showToast("Success", `Followed ${user.username}`, "success");
-        user.followers.push(currentUser._id);
+        user.followers.push(currentUser?._id);
       }
      setFollowing(!following);
     } catch (error) {
@@ -148,12 +148,12 @@ const UserHeader = ({user}) => {
       <Text color={secondaryTextColor} fontSize="md">{user.bio}</Text>
 
       <Flex w="full" justifyContent="center">
-        {currentUser._id===user._id &&(
+        {currentUser?._id===user._id &&(
           <Link as={RouterLink} to="/update">
             <Button size={"md"} variant="outline">Update Profile</Button>
           </Link>
         )}
-        {currentUser._id!==user._id &&(
+        {currentUser?._id!==user._id &&(
           <Button 
             onClick={handleFollowUnfollow} 
             isLoading={updating} 

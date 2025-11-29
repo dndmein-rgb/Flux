@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import UserHeader from '../components/UserHeader.jsx'
-import UserPost from '@/components/UserPost.jsx'
 import { useParams } from 'react-router';
 import useShowToast from '@/hooks/useShowToast.js';
 import { Flex, Spinner, VStack, useColorModeValue } from '@chakra-ui/react';
+import Post from '@/components/Post.jsx';
 
 const UserPage = () => {
   const [user,setUser]=useState(null);
   const {username}=useParams();
   const showToast=useShowToast();
   const [loading,setLoading]=useState(true);
+  const [posts,setPosts]=useState([]);
+  const [fetchingPosts,setFetchingPosts]=useState(true);
   const notFoundColor = useColorModeValue('#0f172a', '#f1f5f9');
 
   useEffect(()=>{
@@ -26,13 +28,32 @@ const UserPage = () => {
       
     } catch (error) {
       showToast("Error", error.message, "error");
+      setPosts([]);
     }finally{
       setLoading(false);
+      
     }
   }
+  const getPosts=async()=>{
+    setFetchingPosts(true);
+      try {
+        const res=await fetch(`/api/posts/user/${username}`);
+        const data=await res.json();
+        if(data.error){
+          showToast("Error",data.error,"error");
+          return;
+        }
+        setPosts(data);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }finally{
+        setFetchingPosts(false);
+      }
+  }
     getUser();
+    getPosts();
   },[username,showToast])
-  
+
   if(!user && loading) return (
     <Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
       <Spinner size={'xl'}/>
@@ -54,12 +75,13 @@ const UserPage = () => {
   return (
     <VStack spacing={6} align="stretch" className="animate-fade-in">
       <UserHeader user={user}/>
-      <VStack spacing={4} align="stretch">
-        <UserPost likes={1200} replies={481} postImg="post1.png" postTitle="lets talk on Threads"/>
-        <UserPost likes={1305} replies={401} postImg="post2.png" postTitle="Nice tutorial"/>
-        <UserPost likes={1006} replies={211} postImg="post3.png" postTitle="Love this guy"/>
-        <UserPost likes={106} replies={21} postTitle="My first post on Threads"/>
-      </VStack>
+      {!fetchingPosts &&posts.length===0 && <h1>User has no posts</h1>}
+      {fetchingPosts && (<Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
+        <Spinner size={'xl'}/>
+      </Flex>)}
+       {posts.map((post)=>(
+        <Post key={post._id} post={post} postedBy={post.postedBy}/>
+       ))}
     </VStack>
   )
 }
