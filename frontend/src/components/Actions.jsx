@@ -110,7 +110,7 @@ const Actions = ({ post }) => {
 			<Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
 				<svg
 					aria-label='Like'
-          cursor={"pointer"}
+          			cursor={"pointer"}
 					color={liked ? "rgb(237, 73, 86)" : ""}
 					fill={liked ? "rgb(237, 73, 86)" : "transparent"}
 					height='19'
@@ -187,7 +187,7 @@ const Actions = ({ post }) => {
 	);
 };
 
-export default Actions;
+export  default Actions;
 
 const RepostSVG = () => {
 	return (

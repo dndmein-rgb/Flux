@@ -9,6 +9,7 @@ import { RxAvatar } from 'react-icons/rx'
 import { FiLogOut } from 'react-icons/fi'
 import useLogout from '@/hooks/useLogout'
 import {authScreenAtom} from '@/atoms/authAtom'
+import {  BsFillChatQuoteFill } from 'react-icons/bs'
 
 const Header = () => {
     const user = useRecoilValue(userAtom)
@@ -117,6 +118,24 @@ const Header = () => {
                                 borderRadius="md"
                             >
                                 <RxAvatar size={20} />
+                            </Flex>
+                        </Link>
+                         <Link 
+                            as={RouterLink} 
+                            to={`/chat`}
+                            _hover={{ transform: 'scale(1.1)' }}
+                            transition="all 0.2s"
+                        >
+                            <Flex 
+                                bg={iconBg}
+                                _hover={{ bg: iconHoverBg }}
+                                alignItems="center"
+                                justifyContent="center"
+                                w={{ base: "36px", md: "40px" }}
+                                h={{ base: "36px", md: "40px" }}
+                                borderRadius="md"
+                            >
+                                <BsFillChatQuoteFill size={20} />
                             </Flex>
                         </Link>
                         <Flex 
