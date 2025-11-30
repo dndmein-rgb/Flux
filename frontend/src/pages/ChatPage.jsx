@@ -2,14 +2,12 @@ import Conversation from '@/components/Conversation'
 import MessageContainer from '@/components/MessageContainer'
 import { useColorModeValue } from '@/components/ui/color-mode'
 import { SearchIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, Input, Skeleton, SkeletonCircle, Text } from '@chakra-ui/react'
+import { Box, Button,  Flex,  Input, Skeleton, SkeletonCircle, Text } from '@chakra-ui/react'
 import React from 'react'
-import { GiConversation } from 'react-icons/gi'
-
 const ChatPage = () => {
   return (
     <Box position={'absolute'} left={'50%'} w={{base:"100%",md:"80%",lg:'750px'}} transform={'translate(-50%)'} p={4}
-    border={'1px solid red'}>
+    >
         <Flex gap={4} flexDirection={{base:'column',md:'row'}} maxW={{sm:'400px',md:'full'}}>
         <Flex flex={30} gap={2} flexDirection={'column'} maxW={{sm:'250px',md:'full'}} mx={'auto'}>
             <Text fontWeight={700} color={useColorModeValue('gray.600', 'gray.400')}>Your Conversations</Text>
