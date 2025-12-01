@@ -7,8 +7,8 @@ import postRoutes from './routes/postRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import  conversationRoutes from './routes/conversationRoutes.js'
 import {v2 as cloudinary} from 'cloudinary'
+import {app, server} from './socket/socket.js'
 
-const app=express();
 
 connectDB();
 const PORT=process.env.PORT || 5000;
@@ -28,6 +28,6 @@ app.use('/api/messages',messageRoutes)
 app.use('/api/conversations',conversationRoutes)
 
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log(`Server running on http://localhost:${PORT}`);
 })  
