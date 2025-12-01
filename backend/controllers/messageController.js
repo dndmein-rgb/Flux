@@ -50,7 +50,7 @@ export const getMessages=async(req,res)=>{
         }
         const messages=await Message.find({
             conversationId:conversation._id
-        }).sort({createdAt:-1})
+        }).sort({createdAt:1})
         res.status(200).json(messages)
 
     } catch (error) {
@@ -64,6 +64,15 @@ export const getConversations=async(req,res)=>{
         const conversations=await Conversation.find({
             participants:userId
         }).populate("participants","username profilePic")
+
+            //remove current user
+            conversations.forEach((conversation)=>{
+                conversation.participants=conversation.participants.filter(
+                    (participant)=>participant._id.toString()!==userId.toString()
+                )
+            })
+            
+
         res.status(200).json(conversations)
     }catch(error){
         res.status(500).json({error:error.message})

@@ -4,22 +4,117 @@ import { useColorModeValue } from '@/components/ui/color-mode'
 import { SearchIcon } from '@chakra-ui/icons'
 import { Box, Button,  Flex,  Input, Skeleton, SkeletonCircle, Text } from '@chakra-ui/react'
 import React from 'react'
+import { useEffect,useState } from 'react';
+import useShowToast from '@/hooks/useShowToast';
+import { useRecoilState,useRecoilValue } from 'recoil';
+import { conversationsAtom } from '../atoms/messageAtom'
+import { selectedConversationAtom } from '../atoms/messageAtom'
+import { GiConversation } from 'react-icons/gi'
+import { userAtom } from '../atoms/userAtom';
 const ChatPage = () => {
+    const showToast=useShowToast()
+
+    const [loadingConversations,setLoadingConversations]=useState(true);
+    const [searchText,setSearchText]=useState("");
+    const [searchingUser,setSearchingUser]=useState(false);
+
+    const [conversations,setConversations]=useRecoilState(conversationsAtom);
+    const [selectedConversation,setSelectedConversation]=useRecoilState(selectedConversationAtom);
+    const currentUser=useRecoilValue(userAtom)
+    
+    console.log("Current User:", currentUser);
+    
+    useEffect(()=>{
+        const getConversations=async()=>{
+            try{
+                const res=await fetch('/api/messages/conversations')
+                const data=await res.json();
+                if(data.error){
+                    showToast("Error",data.error,"error");
+                    return ;
+                }
+                console.log(data);
+                setConversations(data)
+            }catch(error){
+                showToast("Error",error.message,"error")
+            }finally{
+                setLoadingConversations(false);
+            }
+        }
+        getConversations();
+    },[showToast,setConversations])
+    const handleConversationSearch=async(e)=>{
+        e.preventDefault();
+        setSearchingUser(true);
+        try{
+            const res=await fetch(`/api/users/profile/${searchText}`);
+            const searchedUser=await res.json();
+
+            if(searchedUser.error){
+                showToast("Error", searchedUser.error, "error");
+                return;
+            }
+            
+            if(!currentUser){
+                showToast("Error", "You must be logged in", "error");
+                return;
+            }
+            
+            const messagingYourself=searchedUser._id===currentUser._id
+            if(messagingYourself){
+                showToast("Error", "You cannot message yourself", "error");
+                return;
+            }
+            //if user is already in conversation with searched user
+            const conversationAlreadyExists=conversations.find(conversation => 
+                conversation.participants && conversation.participants[0] && conversation.participants[0]._id === searchedUser._id
+            )
+            if(conversationAlreadyExists){
+                setSelectedConversation({
+                    _id:conversationAlreadyExists._id,
+                    userId:searchedUser._id,
+                    username:searchedUser.username,
+                    userProfilePic:searchedUser.profilePic
+                })
+                return;
+            }
+            const mockConversation={
+                mock:true,
+                lastMessage:{
+                    text:"",
+                    sender:""
+                },
+                _id:Date.now(),
+                participants:[{
+                     _id:searchedUser._id,
+                username:searchedUser.username,
+                profilePic:searchedUser.profilePic
+                }]
+               
+            }
+            setConversations((prevConvs)=>[...prevConvs,mockConversation])
+        }catch(error){
+            showToast("Error", error.message, "error")
+        }finally{
+            setSearchingUser(false);
+        }
+    }
+        
   return (
     <Box position={'absolute'} left={'50%'} w={{base:"100%",md:"80%",lg:'750px'}} transform={'translate(-50%)'} p={4}
     >
         <Flex gap={4} flexDirection={{base:'column',md:'row'}} maxW={{sm:'400px',md:'full'}}>
         <Flex flex={30} gap={2} flexDirection={'column'} maxW={{sm:'250px',md:'full'}} mx={'auto'}>
             <Text fontWeight={700} color={useColorModeValue('gray.600', 'gray.400')}>Your Conversations</Text>
-            <form action="">
+            <form onSubmit={handleConversationSearch}>
                 <Flex alignItems={'center'} gap={2}>
-                    <Input placeholder='Search for a user'/>
-                    <Button size={"sm"}>
+                    <Input onChange={(e)=>setSearchText(e.target.value)} placeholder='Search for a user'/>
+                    <Button onClick={handleConversationSearch} isLoading={searchingUser} size={"sm"}>
                         <SearchIcon/>
                         </Button>
                 </Flex>
             </form>
-            {false &&  [0,1,2,3,4].map((_,i)=>(
+            {loadingConversations &&  [0,1,2,3,4].map((_,i)=>(
                 <Flex key={i} gap={4} alignItems={'center'} borderRadius={'md'} p={1}>
                     <Box>
                         <SkeletonCircle size={10}/>
@@ -30,15 +125,21 @@ const ChatPage = () => {
                     </Flex>
                 </Flex>
             ))}
-            <Conversation/>
-             <Conversation/>
-              <Conversation/>
+            {!loadingConversations &&(
+                conversations.map((conversation)=>(
+                    <Conversation key={conversation._id} conversation={conversation}/>
+                ))
+            )}
+           
         </Flex>
-        {/* <Flex flex={70} borderRadius={'md'} p={2} flexDir={'column'} alignItems={'center'} justifyContent={'center'} height={'400px'}>
+        {!selectedConversation._id && (
+             <Flex flex={70} borderRadius={'md'} p={2} flexDir={'column'} alignItems={'center'} justifyContent={'center'} height={'400px'}>
            <GiConversation size={100}/>
             <Text fontSize={20}>Select a conversation to start messaging</Text>
-        </Flex> */}
-        <MessageContainer/>
+        </Flex>
+        )}
+       
+       {selectedConversation._id &&  <MessageContainer/>}
 
         </Flex>
 
