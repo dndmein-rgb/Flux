@@ -11,6 +11,7 @@ import { conversationsAtom } from '../atoms/messageAtom'
 import { selectedConversationAtom } from '../atoms/messageAtom'
 import { GiConversation } from 'react-icons/gi'
 import { userAtom } from '../atoms/userAtom';
+import {useSocket} from '../context/SocketContext';
 const ChatPage = () => {
     const showToast=useShowToast()
 
@@ -21,8 +22,7 @@ const ChatPage = () => {
     const [conversations,setConversations]=useRecoilState(conversationsAtom);
     const [selectedConversation,setSelectedConversation]=useRecoilState(selectedConversationAtom);
     const currentUser=useRecoilValue(userAtom)
-    
-    console.log("Current User:", currentUser);
+    const {onlineUsers,socket}=useSocket();
     
     useEffect(()=>{
         const getConversations=async()=>{
@@ -33,7 +33,6 @@ const ChatPage = () => {
                     showToast("Error",data.error,"error");
                     return ;
                 }
-                console.log(data);
                 setConversations(data)
             }catch(error){
                 showToast("Error",error.message,"error")
@@ -127,7 +126,9 @@ const ChatPage = () => {
             ))}
             {!loadingConversations &&(
                 conversations.map((conversation)=>(
-                    <Conversation key={conversation._id} conversation={conversation}/>
+                    <Conversation key={conversation._id} 
+                    isOnline={conversation.participants?.[0]?._id && onlineUsers.includes(conversation.participants[0]._id)}
+                     conversation={conversation}/>
                 ))
             )}
            

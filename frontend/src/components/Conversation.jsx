@@ -3,14 +3,13 @@ import { Avatar, AvatarBadge, Flex, Image,Stack, Text, useColorModeValue, WrapIt
 import { useRecoilValue ,useRecoilState} from 'recoil'
 import { BsCheck2All } from 'react-icons/bs'
 import { selectedConversationAtom } from '../atoms/messageAtom';
-const Conversation = ({conversation}) => {
+const Conversation = ({conversation,isOnline}) => {
 
     const user=conversation.participants[0];
     const currentUser=useRecoilValue(userAtom)
     const lastMessage=conversation.lastMessage;
     const [selectedConversation,setSelectedConversation]=useRecoilState(selectedConversationAtom)
     const colorMode = useColorModeValue('gray.600', 'gray.dark');
-    console.log("selectedConversation",selectedConversation);
     
     if(!user) return null;
   return (
@@ -41,7 +40,7 @@ const Conversation = ({conversation}) => {
                 md:'md'
 
             }} src={user.profilePic}>
-                <AvatarBadge boxSize='1em' bg='green.500' />
+                {isOnline  ? <AvatarBadge boxSize='1em' bg='green.500' />:""}
             </Avatar>
         </WrapItem>
         <Stack direction={'column'} fontSize={'sm'}>

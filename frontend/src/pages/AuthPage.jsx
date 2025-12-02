@@ -7,7 +7,6 @@ import { Flex } from '@chakra-ui/react'
 
 const AuthPage = () => {
     const authScreenState=useRecoilValue(authScreenAtom)
-    console.log(authScreenState)
   return (
     <Flex justify="center" minH="100vh">
       {authScreenState=="login" ? <LoginCard/> : <SignupCard/>}
