@@ -23,7 +23,25 @@ const ChatPage = () => {
     const [selectedConversation,setSelectedConversation]=useRecoilState(selectedConversationAtom);
     const currentUser=useRecoilValue(userAtom)
     const {onlineUsers,socket}=useSocket();
-    
+    useEffect(()=>{
+        socket?.on("messagesSeen",({conversationId})=>{
+           setConversations(prev =>{
+            const updatedConversation=prev.map(conversation=>{
+                if(conversation._id===conversationId){
+                    return{
+                        ...conversation,
+                        lastMessage:{
+                            ...conversation.lastMessage,
+                            seen:true
+                        }
+                    }
+                }
+                return conversation;
+            })
+            return updatedConversation;
+           })
+        })
+    },[socket,setConversations])
     useEffect(()=>{
         const getConversations=async()=>{
             try{
@@ -42,6 +60,7 @@ const ChatPage = () => {
         }
         getConversations();
     },[showToast,setConversations])
+
     const handleConversationSearch=async(e)=>{
         e.preventDefault();
         setSearchingUser(true);

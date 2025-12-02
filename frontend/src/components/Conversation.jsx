@@ -1,5 +1,5 @@
 import { userAtom } from '@/atoms/userAtom';
-import { Avatar, AvatarBadge, Flex, Image,Stack, Text, useColorModeValue, WrapItem } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Flex, Image,Stack, Text, useColorModeValue, WrapItem } from '@chakra-ui/react'
 import { useRecoilValue ,useRecoilState} from 'recoil'
 import { BsCheck2All } from 'react-icons/bs'
 import { selectedConversationAtom } from '../atoms/messageAtom';
@@ -49,7 +49,9 @@ const Conversation = ({conversation,isOnline}) => {
                 <Image src='/verified.png' w={4} h={4} ml={1}/>
             </Text>
             <Text fontSize={'xs'} display={'flex'} alignItems={'center'} gap={1}>
-                {currentUser._id === lastMessage.sender ?<BsCheck2All />: ""}
+                {currentUser._id === lastMessage.sender ?(
+                    <Box color={lastMessage.seen ? "blue.400":""}><BsCheck2All /></Box>
+                ): ""}
                 {lastMessage.text.length > 18 ? lastMessage.text.substring(0, 18) + '...' : lastMessage.text}
             </Text>
         </Stack>
