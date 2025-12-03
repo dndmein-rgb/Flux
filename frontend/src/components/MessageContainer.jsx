@@ -6,12 +6,12 @@ import {
   Skeleton,
   SkeletonCircle,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useEffect, useState, useRef } from "react";
-import { useColorModeValue } from "./ui/color-mode";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
-import useShowToast from "@/hooks/useShowToast";
+import useShowToast from "../hooks/useShowToast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedConversationAtom } from "../atoms/messageAtom";
 import { userAtom } from "../atoms/userAtom";
@@ -30,7 +30,7 @@ const MessageContainer = () => {
   const setConversations = useSetRecoilState(conversationsAtom);
   useEffect(() => {
     socket.on("newMessage", (message) => {
-      if(selectedConversation._id===message.conversationId){
+      if (selectedConversation._id === message.conversationId) {
         setMessages((prev) => [...prev, message]);
       }
       setConversations((prev) => {
@@ -50,32 +50,37 @@ const MessageContainer = () => {
       });
     });
     return () => socket.off("newMessage");
-  }, [socket,selectedConversation._id,setConversations]);
-  useEffect(()=>{
-    const lastMessageIsFromOtherUser=messages.length && messages[messages.length-1].sender !=currentUser._id
-    if(lastMessageIsFromOtherUser){
-      socket.emit("markMessagesAsSeen",{conversationId:selectedConversation._id,userId:selectedConversation.userId})
+  }, [socket, selectedConversation._id, setConversations]);
+  useEffect(() => {
+    const lastMessageIsFromOtherUser =
+      messages.length && messages[messages.length - 1].sender != currentUser._id;
+    if (lastMessageIsFromOtherUser) {
+      socket.emit("markMessagesAsSeen", {
+        conversationId: selectedConversation._id,
+        userId: selectedConversation.userId,
+      });
     }
-    socket.on("messagesSeen",({conversationId})=>{
-      if(selectedConversation._id===conversationId){
-        setMessages(prev =>{
-          const updatedMessages=prev.map(message=>{
-            if(!message.seen){
-              return{
+    socket.on("messagesSeen", ({ conversationId }) => {
+      if (selectedConversation._id === conversationId) {
+        setMessages((prev) => {
+          const updatedMessages = prev.map((message) => {
+            if (!message.seen) {
+              return {
                 ...message,
-                seen:true
-              }
+                seen: true,
+              };
             }
-            return message
-          })
-          return updatedMessages
-        })
+            return message;
+          });
+          return updatedMessages;
+        });
       }
-    })
-  },[socket,currentUser._id,messages,selectedConversation])
-  useEffect(()=>{
-    messageEndRef.current?.scrollIntoView({behavior:'smooth'});
-  },[messages])
+    });
+  }, [socket, currentUser._id, messages, selectedConversation]);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   useEffect(() => {
     const getMessages = async () => {
       setLoadingMessages(true);
@@ -143,8 +148,14 @@ const MessageContainer = () => {
           ))}
         {!loadingMessages &&
           messages.map((message) => (
-            <Flex key={message._id} direction={"column"}
-                ref={messages.length -1===messages.indexOf(message) ? messageEndRef:null}
+            <Flex
+              key={message._id}
+              direction={"column"}
+              ref={
+                messages.length - 1 === messages.indexOf(message)
+                  ? messageEndRef
+                  : null
+              }
             >
               <Message
                 message={message}

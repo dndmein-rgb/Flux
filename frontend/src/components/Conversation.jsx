@@ -3,6 +3,7 @@ import { Avatar, AvatarBadge, Box, Flex, Image,Stack, Text, useColorModeValue, W
 import { useRecoilValue ,useRecoilState} from 'recoil'
 import { BsCheck2All } from 'react-icons/bs'
 import { selectedConversationAtom } from '../atoms/messageAtom';
+import { BsFillImageFill } from 'react-icons/bs'
 const Conversation = ({conversation,isOnline}) => {
 
     const user=conversation.participants[0];
@@ -50,9 +51,9 @@ const Conversation = ({conversation,isOnline}) => {
             </Text>
             <Text fontSize={'xs'} display={'flex'} alignItems={'center'} gap={1}>
                 {currentUser._id === lastMessage.sender ?(
-                    <Box color={lastMessage.seen ? "blue.400":""}><BsCheck2All /></Box>
-                ): ""}
-                {lastMessage.text.length > 18 ? lastMessage.text.substring(0, 18) + '...' : lastMessage.text}
+                    <Box as="span" color={lastMessage.seen ? "blue.400":""}><BsCheck2All /></Box>
+                ): ""} 
+                {lastMessage.text.length > 18 ? lastMessage.text.substring(0, 18) + '...' : lastMessage.text||<BsFillImageFill size={16}/>}
             </Text>
         </Stack>
         </Flex>

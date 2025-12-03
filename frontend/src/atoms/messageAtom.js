@@ -7,7 +7,7 @@ export const conversationsAtom=atom({
 export const selectedConversationAtom=atom({
     key:"selectedConversationAtom",
     default:{
-        _id:"",
+        _id:"", //conversation id
         username:"",
         userProfilePic:"",
         userId:""
