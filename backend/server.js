@@ -9,9 +9,11 @@ import messageRoutes from './routes/messageRoutes.js'
 import  conversationRoutes from './routes/conversationRoutes.js'
 import {v2 as cloudinary} from 'cloudinary'
 import {app, server} from './socket/socket.js'
-
+import job from './cron/cron.js'
 
 connectDB();
+job.start();
+
 const PORT=process.env.PORT || 5000;
 const __dirname=path.resolve();
 
