@@ -1,22 +1,22 @@
-import { Flex, Image, Link, Button, Box } from '@chakra-ui/react'
+import { Flex, Image, Link, Box } from '@chakra-ui/react'
 import React from 'react'
 import { useColorMode, useColorModeValue } from "@/components/ui/color-mode"
-import { useRecoilValue ,useSetRecoilState} from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { userAtom } from '@/atoms/userAtom'
 import { AiFillHome } from 'react-icons/ai'
 import { Link as RouterLink } from 'react-router'
 import { RxAvatar } from 'react-icons/rx'
 import { FiLogOut } from 'react-icons/fi'
 import useLogout from '@/hooks/useLogout'
-import {authScreenAtom} from '@/atoms/authAtom'
-import {  BsFillChatQuoteFill } from 'react-icons/bs'
+import { authScreenAtom } from '@/atoms/authAtom'
+import { BsFillChatQuoteFill } from 'react-icons/bs'
 
 const Header = () => {
     const user = useRecoilValue(userAtom)
     const { colorMode, toggleColorMode } = useColorMode()
     const [mounted, setMounted] = React.useState(false)
-    const setAuthScreen=useSetRecoilState(authScreenAtom)
-    const logout=useLogout()
+    const setAuthScreen = useSetRecoilState(authScreenAtom)
+    const logout = useLogout()
 
     React.useEffect(() => {
         setMounted(true)
@@ -31,15 +31,14 @@ const Header = () => {
         <Flex 
             justifyContent="space-between"
             alignItems="center"
-            mt={{ base: 4, md: 6 }} 
-            mb={{ base: 8, md: 12 }}
-            px={{ base: 4, sm: 6, md: 8 }}
+            mt={{ base: 2, sm: 3, md: 4 }} 
+            mb={{ base: 6, sm: 8, md: 10 }}
+            px={{ base: 2, sm: 4, md: 6 }}
             w="100%"
-            maxW="620px"
             mx="auto"
         >
             {/* Left section - Home icon or Login */}
-            <Box w={{ base: "80px", md: "100px" }}>
+            <Box minW={{ base: "70px", sm: "80px", md: "100px" }}>
                 {user ? (
                     <Link 
                         as={RouterLink} 
@@ -52,8 +51,8 @@ const Header = () => {
                             _hover={{ bg: iconHoverBg }}
                             alignItems="center"
                             justifyContent="center"
-                            w={{ base: "36px", md: "40px" }}
-                            h={{ base: "36px", md: "40px" }}
+                            w={{ base: "32px", sm: "36px", md: "40px" }}
+                            h={{ base: "32px", sm: "36px", md: "40px" }}
                             borderRadius="md"
                         >
                             <AiFillHome size={20} />
@@ -72,10 +71,10 @@ const Header = () => {
                             _hover={{ bg: iconHoverBg }}
                             alignItems="center"
                             justifyContent="center"
-                            px={{ base: 3, md: 4 }}
-                            h={{ base: "36px", md: "40px" }}
+                            px={{ base: 2, sm: 3, md: 4 }}
+                            h={{ base: "32px", sm: "36px", md: "40px" }}
                             borderRadius="md"
-                            fontSize={{ base: "sm", md: "md" }}
+                            fontSize={{ base: "xs", sm: "sm", md: "md" }}
                             fontWeight="medium"
                         >
                             Login
@@ -87,8 +86,8 @@ const Header = () => {
             {/* Center section - Logo */}
             <Image 
                 cursor="pointer"
-                w={{ base: 5, md: 6 }}
-                h={{ base: 5, md: 6 }}
+                w={{ base: 4, sm: 5, md: 6 }}
+                h={{ base: 4, sm: 5, md: 6 }}
                 objectFit="contain" 
                 src={logoSrc} 
                 alt="logo" 
@@ -99,9 +98,9 @@ const Header = () => {
             />
 
             {/* Right section - Avatar/Logout or Sign up */}
-            <Box w={{ base: "80px", md: "100px" }}>
+            <Box minW={{ base: "70px", sm: "80px", md: "100px" }}>
                 {user ? (
-                    <Flex gap={{ base: 2, md: 3 }} justifyContent="flex-end" alignItems="center">
+                    <Flex gap={{ base: 1, sm: 2, md: 3 }} justifyContent="flex-end" alignItems="center">
                         <Link 
                             as={RouterLink} 
                             to={`/${user.username}`}
@@ -113,14 +112,14 @@ const Header = () => {
                                 _hover={{ bg: iconHoverBg }}
                                 alignItems="center"
                                 justifyContent="center"
-                                w={{ base: "36px", md: "40px" }}
-                                h={{ base: "36px", md: "40px" }}
+                                w={{ base: "32px", sm: "36px", md: "40px" }}
+                                h={{ base: "32px", sm: "36px", md: "40px" }}
                                 borderRadius="md"
                             >
                                 <RxAvatar size={20} />
                             </Flex>
                         </Link>
-                         <Link 
+                        <Link 
                             as={RouterLink} 
                             to={`/chat`}
                             _hover={{ transform: 'scale(1.1)' }}
@@ -131,11 +130,11 @@ const Header = () => {
                                 _hover={{ bg: iconHoverBg }}
                                 alignItems="center"
                                 justifyContent="center"
-                                w={{ base: "36px", md: "40px" }}
-                                h={{ base: "36px", md: "40px" }}
+                                w={{ base: "32px", sm: "36px", md: "40px" }}
+                                h={{ base: "32px", sm: "36px", md: "40px" }}
                                 borderRadius="md"
                             >
-                                <BsFillChatQuoteFill size={20} />
+                                <BsFillChatQuoteFill size={18} />
                             </Flex>
                         </Link>
                         <Flex 
@@ -145,12 +144,12 @@ const Header = () => {
                             _hover={{ 
                                 bg: hoverBg,
                                 color: 'red.500',
-                                transform: 'translateY(-2px)',
+                                transform: 'scale(1.1)',
                             }}
                             alignItems="center"
                             justifyContent="center"
-                            w={{ base: "36px", md: "40px" }}
-                            h={{ base: "36px", md: "40px" }}
+                            w={{ base: "32px", sm: "36px", md: "40px" }}
+                            h={{ base: "32px", sm: "36px", md: "40px" }}
                             borderRadius="md"
                             transition="all 0.2s"
                             cursor="pointer"
@@ -172,10 +171,10 @@ const Header = () => {
                                 _hover={{ bg: iconHoverBg }}
                                 alignItems="center"
                                 justifyContent="center"
-                                px={{ base: 3, md: 4 }}
-                                h={{ base: "36px", md: "40px" }}
+                                px={{ base: 2, sm: 3, md: 4 }}
+                                h={{ base: "32px", sm: "36px", md: "40px" }}
                                 borderRadius="md"
-                                fontSize={{ base: "sm", md: "md" }}
+                                fontSize={{ base: "xs", sm: "sm", md: "md" }}
                                 fontWeight="medium"
                             >
                                 Sign up

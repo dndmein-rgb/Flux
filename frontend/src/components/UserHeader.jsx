@@ -11,7 +11,6 @@ import {
   VStack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { Menu, MenuButton } from "@chakra-ui/react";
@@ -19,14 +18,12 @@ import {  useRecoilValue } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
 import {Link as RouterLink} from "react-router";
 import useShowToast from "@/hooks/useShowToast";
-
+import useFollowUnfollow from '../hooks/useFollowUnfollow';
 
 const UserHeader = ({user}) => {
   const showToast=useShowToast()
-  const [updating ,setUpdating]=useState(false);
   const currentUser=useRecoilValue(userAtom)//logged in user
-  const [following,setFollowing]=useState(user?.followers?.includes(currentUser?._id) || false)
-  
+  const {handleFollowUnfollow, updating, following}=useFollowUnfollow(user);
   // All hooks must be called before any conditional returns
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -57,56 +54,29 @@ const UserHeader = ({user}) => {
     });
   };
   
-  const handleFollowUnfollow=async()=>{
-    if(!currentUser){
-      showToast("Error", "Please login to follow", "error")
-      return;
-    }
-    if(updating)return;
-    setUpdating(true)
-    try {
-      const res=await fetch(`/api/users/follow/${user._id}`,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        }
-      })
-      const data=await res.json();
-      if(data.error){
-        showToast("Error",data.error,"error")
-        return;
-      }
-      if(following){
-        showToast("Success", `Unfollowed ${user.username}`, "success");
-        user.followers.pop();
-      }else{
-        showToast("Success", `Followed ${user.username}`, "success");
-        user.followers.push(currentUser?._id);
-      }
-     setFollowing(!following);
-    } catch (error) {
-      showToast("Error",error.message,error)
-    }finally{
-      setUpdating(false)
-    }
-  }
-  
   return (
     <VStack 
-      gap={5} 
+      gap={{ base: 4, md: 5 }} 
       alignItems={"start"} 
       className="animate-fade-in"
       bg={bgColor}
-      p={{ base: 4, md: 6 }}
-      borderRadius="2xl"
+      p={{ base: 4, sm: 5, md: 6 }}
+      borderRadius={{ base: "xl", md: "2xl" }}
       boxShadow={boxShadow}
+      w="full"
     >
-      <Flex justifyContent={"space-between"} w={"full"} align="start">
-        <Box flex={1}>
-          <Text fontWeight={"bold"} fontSize={{ base: "2xl", md: "3xl" }} color={textColor} fontFamily="heading">
+      <Flex justifyContent={"space-between"} w={"full"} align="start" gap={3}>
+        <Box flex={1} minW={0}>
+          <Text 
+            fontWeight={"bold"} 
+            fontSize={{ base: "xl", sm: "2xl", md: "3xl" }} 
+            color={textColor} 
+            fontFamily="heading"
+            isTruncated
+          >
             {user.username}
           </Text>
-          <Flex gap={2} alignItems={"center"} mt={2}>
+          <Flex gap={2} alignItems={"center"} mt={2} flexWrap="wrap">
             <Text fontSize={"sm"} color={secondaryTextColor}>{user.username}</Text>
             <Text
               fontSize={"xs"}
@@ -121,12 +91,12 @@ const UserHeader = ({user}) => {
             </Text>
           </Flex>
         </Box>
-        <Box>
+        <Box flexShrink={0}>
           {user.profilePic && (
             <Avatar 
               name={user.name} 
               src={user.profilePic} 
-              size={{base:"lg",md:"xl"}}
+              size={{base:"md",sm:"lg",md:"xl"}}
               border="4px solid"
               borderColor={borderColor}
               boxShadow={avatarShadow}
@@ -136,7 +106,7 @@ const UserHeader = ({user}) => {
             <Avatar 
               name={user.name} 
               src="https://bit.ly/broken-link" 
-              size={{base:"lg",md:"xl"}}
+              size={{base:"md",sm:"lg",md:"xl"}}
               border="4px solid"
               borderColor={borderColor}
               boxShadow={avatarShadow}
@@ -145,47 +115,48 @@ const UserHeader = ({user}) => {
         </Box>
       </Flex>
       
-      <Text color={secondaryTextColor} fontSize="md">{user.bio}</Text>
+      <Text color={secondaryTextColor} fontSize={{ base: "sm", md: "md" }}>{user.bio}</Text>
 
       <Flex w="full" justifyContent="center">
         {currentUser?._id===user._id &&(
           <Link as={RouterLink} to="/update">
-            <Button size={"md"} variant="outline">Update Profile</Button>
+            <Button size={{ base: "sm", md: "md" }} variant="outline">Update Profile</Button>
           </Link>
         )}
         {currentUser?._id!==user._id &&(
           <Button 
             onClick={handleFollowUnfollow} 
             isLoading={updating} 
-            size={"md"}
+            size={{ base: "sm", md: "md" }}
           >
             {following ? "Unfollow":"Follow"}
           </Button>
         )}
       </Flex>
       
-      <Flex w={"full"} justifyContent={"space-between"} align="center">
+      <Flex w={"full"} justifyContent={"space-between"} align="center" gap={2}>
         <Flex gap={2} alignItems={"center"} flexWrap="wrap">
-          <Text color={secondaryTextColor} fontWeight="600" fontSize="sm">
+          <Text color={secondaryTextColor} fontWeight="600" fontSize={{ base: "xs", md: "sm" }}>
             {user.followers.length} followers
           </Text>
-          <Box w={1} h={1} bg={secondaryTextColor} borderRadius={"full"}></Box>
+          <Box w={1} h={1} bg={secondaryTextColor} borderRadius={"full"} display={{ base: "none", sm: "block" }}></Box>
           <Link 
             color={linkColor} 
-            fontSize="sm"
+            fontSize={{ base: "xs", md: "sm" }}
             _hover={{ textDecoration: 'underline' }}
+            display={{ base: "none", sm: "inline" }}
           >
             instagram.com
           </Link>
         </Flex>
         <Flex gap={1}>
-          <Box className="icon-container">
-            <BsInstagram size={20} cursor={"pointer"} />
+          <Box className="icon-container" w={{ base: "32px", md: "40px" }} h={{ base: "32px", md: "40px" }}>
+            <BsInstagram size={18} cursor={"pointer"} />
           </Box>
-          <Box className="icon-container">
+          <Box className="icon-container" w={{ base: "32px", md: "40px" }} h={{ base: "32px", md: "40px" }}>
             <Menu>
               <MenuButton>
-                <CgMoreO size={20} cursor={"pointer"} />
+                <CgMoreO size={18} cursor={"pointer"} />
               </MenuButton>
               <Portal />
               <MenuList 
@@ -211,11 +182,11 @@ const UserHeader = ({user}) => {
           borderBottom={"2px solid"} 
           borderColor={tabActiveColor}
           justifyContent={"center"} 
-          pb={3} 
+          pb={{ base: 2, md: 3 }} 
           cursor={"pointer"}
           transition="all 0.2s"
         >
-          <Text fontWeight={"bold"} color={tabActiveTextColor}>Threads</Text>
+          <Text fontWeight={"bold"} color={tabActiveTextColor} fontSize={{ base: "sm", md: "md" }}>Threads</Text>
         </Flex>
         <Flex 
           flex={1} 
@@ -223,7 +194,7 @@ const UserHeader = ({user}) => {
           borderColor={borderColor}
           color={secondaryTextColor} 
           justifyContent={"center"} 
-          pb={3} 
+          pb={{ base: 2, md: 3 }} 
           cursor={"pointer"}
           transition="all 0.2s"
           _hover={{ 
@@ -231,7 +202,7 @@ const UserHeader = ({user}) => {
             color: textColor
           }}
         >
-          <Text fontWeight={"bold"}>Replies</Text>
+          <Text fontWeight={"bold"} fontSize={{ base: "sm", md: "md" }}>Replies</Text>
         </Flex>
       </Flex>
     </VStack>

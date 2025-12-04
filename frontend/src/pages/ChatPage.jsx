@@ -135,23 +135,21 @@ const ChatPage = () => {
 
   return (
     <Box
-      position={"absolute"}
-      left={"50%"}
-      w={{ base: "100%", md: "80%", lg: "750px" }}
-      transform={"translate(-50%)"}
-      p={4}
+      w="full"
+      maxW={{ base: "100%", md: "90%", lg: "900px" }}
+      mx="auto"
+      p={{ base: 2, sm: 3, md: 4 }}
     >
       <Flex
-        gap={4}
+        gap={{ base: 3, md: 4 }}
         flexDirection={{ base: "column", md: "row" }}
-        maxW={{ sm: "400px", md: "full" }}
+        w="full"
       >
         <Flex
-          flex={30}
+          flex={{ base: "1", md: "30" }}
           gap={2}
           flexDirection={"column"}
-          maxW={{ sm: "250px", md: "full" }}
-          mx={"auto"}
+          w={{ base: "full", md: "auto" }}
         >
           <Text
             fontWeight={700}

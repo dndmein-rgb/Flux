@@ -1,5 +1,4 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes ,useLocation} from "react-router";
 import UserPage from "./pages/UserPage";
 import PostPage from "./pages/PostPage";
 import Header from "./components/Header";
@@ -14,9 +13,14 @@ import ChatPage from "./pages/ChatPage";
 
 const App = () => {
   const user = useRecoilValue(userAtom);
+  const {pathname}=useLocation();
   return (
-    <Box position={'relative'}>
-    <Container maxW="620px" px={{ base: 4, md: 4 }} py={{ base: 4, md: 6 }}>
+    <Box position={'relative'} minH="100vh">
+    <Container 
+      maxW={pathname==='/' ? {base:'100%',sm:'540px',md:'900px',lg:'1000px'} : {base:'100%',sm:'540px',md:'720px'}} 
+      px={{ base: 3, sm: 4, md: 6 }} 
+      py={{ base: 3, sm: 4, md: 6 }}
+    >
       <Header />
       <Routes>
         <Route

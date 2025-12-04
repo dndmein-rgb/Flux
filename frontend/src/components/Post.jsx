@@ -68,11 +68,11 @@ const Post = ({post,postedBy}) => {
   return (
     <Link to={`/${user.username}/post/${post._id}`}>
       <Flex 
-        gap={3} 
-        mb={4} 
-        p={5}
+        gap={{ base: 2, sm: 3 }} 
+        mb={{ base: 3, md: 4 }} 
+        p={{ base: 3, sm: 4, md: 5 }}
         bg={bgColor}
-        borderRadius="xl"
+        borderRadius={{ base: "lg", md: "xl" }}
         border="1px solid"
         borderColor={borderColor}
         transition="all 0.3s"
@@ -81,11 +81,11 @@ const Post = ({post,postedBy}) => {
           borderColor: hoverBorderColor,
         }}
       >
-        <Flex flexDirection={"column"} alignItems={"center"}>
+        <Flex flexDirection={"column"} alignItems={"center"} display={{ base: "none", sm: "flex" }}>
           <Avatar 
             name={user.name}
             src={user?.profilePic} 
-            size={"md"}
+            size={{ base: "sm", md: "md" }}
             border="2px solid"
             borderColor={borderColor}
             onClick={(e)=>{
@@ -95,7 +95,7 @@ const Post = ({post,postedBy}) => {
           />
           <Box flex={1} w={"1px"} bg={borderColor} my={2}></Box>
 
-          <Box position={"relative"} w={"42px"} h={"38px"}>
+          <Box position={"relative"} w={{ base: "36px", md: "42px" }} h={{ base: "32px", md: "38px" }}>
             {post.replies.length===0 && <Text textAlign={"center"}>🤔</Text>}
             {post.replies[0] && (
               <Avatar
@@ -139,26 +139,39 @@ const Post = ({post,postedBy}) => {
           </Box>
         </Flex>
 
-        <Flex flex={1} flexDirection={"column"} gap={2}>
-          <Flex justifyContent={"space-between"} w={"full"} align="center">
-            <Flex w={"full"} alignItems={'center'} gap={1}>
+        <Flex flex={1} flexDirection={"column"} gap={2} minW={0}>
+          <Flex justifyContent={"space-between"} w={"full"} align="center" gap={2}>
+            <Flex alignItems={'center'} gap={1} minW={0} flex={1}>
+                <Avatar 
+                  name={user.name}
+                  src={user?.profilePic} 
+                  size="sm"
+                  border="2px solid"
+                  borderColor={borderColor}
+                  onClick={(e)=>{
+                    e.preventDefault();
+                    Navigate(`/${user.username}`)
+                  }}
+                  display={{ base: "block", sm: "none" }}
+                  flexShrink={0}
+                />
                 <Text onClick={(e)=>{
               e.preventDefault();
               Navigate(`/${user.username}`)
-            }} fontSize={"sm"} fontWeight={"bold"} color={textColor}>
+            }} fontSize={{ base: "xs", sm: "sm" }} fontWeight={"bold"} color={textColor} isTruncated>
                     {user?.username}
                 </Text>
-                <Image src="/verified.png" w={4} h={4} />
+                <Image src="/verified.png" w={{ base: 3, sm: 4 }} h={{ base: 3, sm: 4 }} flexShrink={0} />
             </Flex>
-            <Flex gap={3} alignItems={'center'}>
-                <Text fontSize={"sm"} w={36} textAlign={'right'} color={secondaryTextColor}>{(() => {
+            <Flex gap={{ base: 2, md: 3 }} alignItems={'center'} flexShrink={0}>
+                <Text fontSize={{ base: "xs", sm: "sm" }} textAlign={'right'} color={secondaryTextColor} whiteSpace="nowrap">{(() => {
                   const timeAgo = formatDistanceToNow(new Date(post.createdAt)).replace('about ', '');
                   return timeAgo === 'less than a minute' ? 'just now' : `${timeAgo} ago`;
                 })()}</Text>
-                {currentUser?._id===user._id && <DeleteIcon size={20} onClick={handleDeletePost}/>}
+                {currentUser?._id===user._id && <DeleteIcon size={{ base: 16, md: 20 }} onClick={handleDeletePost} cursor="pointer"/>}
             </Flex>
           </Flex>
-          <Text fontSize={"sm"} color={textColor} mt={2}>{post.text}</Text>
+          <Text fontSize={{ base: "sm", md: "md" }} color={textColor} mt={2}>{post.text}</Text>
           {post.img &&(
           <Box
             borderRadius="lg"
