@@ -17,6 +17,7 @@ import { selectedConversationAtom } from "../atoms/messageAtom";
 import { userAtom } from "../atoms/userAtom";
 import { useSocket } from "../context/SocketContext";
 import { conversationsAtom } from "../atoms/messageAtom";
+import messageSound from'@/assets/sounds/message.mp3'
 
 const MessageContainer = () => {
   const showToast = useShowToast();
@@ -32,6 +33,10 @@ const MessageContainer = () => {
     socket.on("newMessage", (message) => {
       if (selectedConversation._id === message.conversationId) {
         setMessages((prev) => [...prev, message]);
+      }
+      if(!document.hasFocus()){
+        const sound=new Audio(messageSound);
+        sound.play();
       }
       setConversations((prev) => {
         const updatedConversations = prev.map((conversation) => {
