@@ -15,7 +15,7 @@ export default function SocketContextProvider({ children }) {
 
 	useEffect(() => {
 		if (user?._id) {
-			const socket = io("/", {
+			const socket = io("/", {        //localhost5000 in development
 				query: {
 					userId: user._id,
 				},
