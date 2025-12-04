@@ -33,6 +33,10 @@ const userSchema=new mongoose.Schema({
     },bio:{
         type:String,
         default:""
+    },
+    isFrozen:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true})
 const User=mongoose.model("User",userSchema)

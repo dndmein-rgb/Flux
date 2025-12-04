@@ -10,6 +10,9 @@ import { FiLogOut } from 'react-icons/fi'
 import useLogout from '@/hooks/useLogout'
 import { authScreenAtom } from '@/atoms/authAtom'
 import { BsFillChatQuoteFill } from 'react-icons/bs'
+import { MdOutlineLightMode, MdOutlineDarkMode } from 'react-icons/md'
+import { MdOutlineSettings } from 'react-icons/md'
+
 
 const Header = () => {
     const user = useRecoilValue(userAtom)
@@ -125,6 +128,7 @@ const Header = () => {
                             _hover={{ transform: 'scale(1.1)' }}
                             transition="all 0.2s"
                         >
+                            
                             <Flex 
                                 bg={iconBg}
                                 _hover={{ bg: iconHoverBg }}
@@ -135,6 +139,25 @@ const Header = () => {
                                 borderRadius="md"
                             >
                                 <BsFillChatQuoteFill size={18} />
+                            </Flex>
+                        </Link>
+                         <Link 
+                            as={RouterLink} 
+                            to={`/settings`}
+                            _hover={{ transform: 'scale(1.1)' }}
+                            transition="all 0.2s"
+                        >
+                            
+                            <Flex 
+                                bg={iconBg}
+                                _hover={{ bg: iconHoverBg }}
+                                alignItems="center"
+                                justifyContent="center"
+                                w={{ base: "32px", sm: "36px", md: "40px" }}
+                                h={{ base: "32px", sm: "36px", md: "40px" }}
+                                borderRadius="md"
+                            >
+                                <MdOutlineSettings size={18} />
                             </Flex>
                         </Link>
                         <Flex 
