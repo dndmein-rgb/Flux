@@ -146,10 +146,11 @@ const ChatPage = () => {
         w="full"
       >
         <Flex
-          flex={{ base: "1", md: "30" }}
+          flex={{ base: "1", md: "28" }}
           gap={2}
           flexDirection={"column"}
           w={{ base: "full", md: "auto" }}
+          minW={{ md: "210px" }}
         >
           <Text
             fontWeight={700}
@@ -157,21 +158,20 @@ const ChatPage = () => {
           >
             Your Conversations
           </Text>
-          <form onSubmit={handleConversationSearch}>
-            <Flex alignItems={"center"} gap={2}>
-              <Input
-                onChange={(e) => setSearchText(e.target.value)}
-                placeholder="Search for a user"
-              />
-              <Button
-                onClick={handleConversationSearch}
-                isLoading={searchingUser}
-                size={"sm"}
-              >
-                <SearchIcon />
-              </Button>
-            </Flex>
-          </form>
+          <Flex as="form" onSubmit={handleConversationSearch} alignItems={"center"} gap={2}>
+            <Input
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Search for a user"
+              value={searchText}
+            />
+            <Button
+              type="submit"
+              isLoading={searchingUser}
+              size={"sm"}
+            >
+              <SearchIcon />
+            </Button>
+          </Flex>
           {loadingConversations &&
             [0, 1, 2, 3, 4].map((_, i) => (
               <Flex

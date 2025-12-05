@@ -179,7 +179,7 @@ export const getUserProfile = async (req, res) => {
     const { query } = req.params;
     try {
       let user;
-      if(mongoose.Types.ObjectId.isValid(query)){
+     if(mongoose.Types.ObjectId.isValid(query)){ 
         user=await User.findOne({_id:query}).select("-password -updatedAt");
       }else{
         user=await User.findOne({username:query}).select("-password -updatedAt");
