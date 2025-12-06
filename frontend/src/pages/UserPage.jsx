@@ -59,11 +59,11 @@ const UserPage = () => {
   return (
     <VStack spacing={6} align="stretch" className="animate-fade-in">
       <UserHeader user={user}/>
-      {!fetchingPosts &&posts.length===0 && <h1>User has no posts</h1>}
+      {!fetchingPosts && posts.length===0 && <h1>User has no posts</h1>}
       {fetchingPosts && (<Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
         <Spinner size={'xl'}/>
       </Flex>)}
-       {posts.map((post)=>(
+       {Array.isArray(posts) && posts.map((post)=>(
         <Post key={post._id} post={post} postedBy={post.postedBy} /> 
        ))}
     </VStack>
