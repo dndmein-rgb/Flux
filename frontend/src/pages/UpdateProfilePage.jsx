@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router";
 
 export default function UpdateProfilePage() {
   const [user,setUser] = useRecoilState(userAtom);
@@ -29,6 +30,7 @@ export default function UpdateProfilePage() {
   const {handleImageChange, imgUrl}=usePreviewImage();
   const showToast=useShowToast();
   const [updating,setUpdating]=useState(false);
+  const navigate = useNavigate();
   const handleSubmit = async(e) => {
     e.preventDefault();
     if(updating)return;
@@ -49,6 +51,7 @@ export default function UpdateProfilePage() {
       showToast("Success", "Profile updated successfully", "success");
       setUser(data);
       localStorage.setItem("user-threads", JSON.stringify(data));
+      navigate(`/${data.username}`);
     } catch (error) {
       showToast("Error", error.message, "error");
     }finally{
@@ -214,12 +217,14 @@ export default function UpdateProfilePage() {
 
       <Stack direction={["column", "row"]} spacing={4} pt={4}>
         <Button
+        onClick={() => navigate("/")}
           w="full"
           size="lg"
           variant="outline"
           _hover={{ 
             bg: useColorModeValue('gray.50', 'gray.700'),
           }}
+          
         >
           Cancel
         </Button>
