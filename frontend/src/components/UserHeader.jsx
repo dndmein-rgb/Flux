@@ -24,6 +24,7 @@ const UserHeader = ({user}) => {
   const showToast=useShowToast()
   const currentUser=useRecoilValue(userAtom)//logged in user
   const {handleFollowUnfollow, updating, following}=useFollowUnfollow(user);
+
   // All hooks must be called before any conditional returns
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -74,7 +75,7 @@ const UserHeader = ({user}) => {
             fontFamily="heading"
             isTruncated
           >
-            {user.username}
+            {user.name}
           </Text>
           <Flex gap={2} alignItems={"center"} mt={2} flexWrap="wrap">
             <Text fontSize={"sm"} color={secondaryTextColor}>{user.username}</Text>
